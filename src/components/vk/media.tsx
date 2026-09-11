@@ -29,16 +29,25 @@ export function StorageMedia({
   type,
   alt,
   className,
+  contain,
 }: {
   path?: string | null;
   type?: string | null;
   alt: string;
   className?: string;
+  contain?: boolean;
 }) {
   const url = useMedia(path);
   if (!url) return null;
   if (type === "video") {
     return <video src={url} controls playsInline className={cn("w-full bg-black", className)} />;
   }
-  return <img src={url} alt={alt} loading="lazy" className={cn("object-cover", className)} />;
+  return (
+    <img
+      src={url}
+      alt={alt}
+      loading="lazy"
+      className={cn(contain ? "object-contain" : "object-cover", className)}
+    />
+  );
 }
