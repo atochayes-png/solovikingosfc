@@ -89,21 +89,26 @@ export function ResultsPanel() {
         vikingada_media_url: vkMedia,
       })
       .eq("id", matchId);
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("Resultado guardado");
+    toast.success("Resultado publicado. Ficha, estadísticas e inicio actualizados.");
     qc.invalidateQueries({ queryKey: ["matches"] });
     qc.invalidateQueries({ queryKey: ["match", matchId] });
+    qc.invalidateQueries({ queryKey: ["match_events"] });
   }
 
   async function addEvent() {
     if (!matchId || !evPlayer) { toast.error("Elige un jugador"); return; }
+    setAddingEvent(true);
     const { error } = await supabase.from("match_events").insert({
       match_id: matchId,
       player_id: evPlayer,
       event_type: evType,
       minute: evMinute ? Number(evMinute) : null,
     });
+    setAddingEvent(false);
     if (error) { toast.error(error.message); return; }
+    toast.success("Incidencia registrada");
     setEvMinute("");
     qc.invalidateQueries({ queryKey: ["match_events"] });
   }
@@ -111,6 +116,7 @@ export function ResultsPanel() {
   async function removeEvent(id: string) {
     const { error } = await supabase.from("match_events").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
+    toast.success("Incidencia eliminada");
     qc.invalidateQueries({ queryKey: ["match_events"] });
   }
 
