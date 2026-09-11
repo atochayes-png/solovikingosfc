@@ -50,6 +50,7 @@ export function MediaPanel() {
       featured,
       uploaded_by: session?.user.id ?? null,
     });
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Agregado a la Vikingoteca");
     setUrl(null);
@@ -64,6 +65,14 @@ export function MediaPanel() {
   async function remove(id: string) {
     const { error } = await supabase.from("media").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
+    toast.success("Elemento eliminado");
+    qc.invalidateQueries({ queryKey: ["media"] });
+  }
+
+  async function toggleFeatured(id: string, value: boolean) {
+    const { error } = await supabase.from("media").update({ featured: value }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(value ? "Destacado en la portada" : "Quitado de la portada");
     qc.invalidateQueries({ queryKey: ["media"] });
   }
 
