@@ -227,6 +227,20 @@ export function UsersPanel() {
                     aria-label="Cuenta activa"
                   />
                   <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label="Editar cuenta"
+                    onClick={() =>
+                      setEdit({
+                        id: a.id,
+                        name: a.display_name,
+                        role: a.role === "admin" ? "admin" : "vikingo",
+                      })
+                    }
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
                     size="sm"
                     variant="outline"
                     onClick={() => setResetFor(resetFor === a.id ? "" : a.id)}
@@ -242,12 +256,51 @@ export function UsersPanel() {
                     value={resetPass}
                     onChange={(e) => setResetPass(e.target.value)}
                   />
-                  <Button onClick={doReset}>Guardar</Button>
+                  <Button onClick={doReset} disabled={resetting}>
+                    {resetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Guardar
+                  </Button>
                 </div>
               )}
             </li>
           ))}
         </ul>
+
+        <Dialog open={!!edit} onOpenChange={(v) => !v && setEdit(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar cuenta</DialogTitle>
+            </DialogHeader>
+            {edit && (
+              <div className="space-y-3">
+                <Field label="Nombre">
+                  <Input
+                    value={edit.name}
+                    onChange={(e) => setEdit({ ...edit, name: e.target.value })}
+                  />
+                </Field>
+                <Field label="Rol">
+                  <Select
+                    value={edit.role}
+                    onValueChange={(v) => setEdit({ ...edit, role: v as "admin" | "vikingo" })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">Administrador</SelectItem>
+                      <SelectItem value="vikingo">Vikingo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+                <Button className="w-full" onClick={saveEdit} disabled={savingEdit}>
+                  {savingEdit && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Guardar cambios
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </PanelCard>
     </>
   );
