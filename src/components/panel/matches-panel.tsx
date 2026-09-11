@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  ConfirmButton,
   Field,
   MediaPicker,
   PanelCard,
@@ -65,9 +66,11 @@ export function MatchesPanel() {
   const { data: matches = [] } = useMatches();
   const { data: seasons = [] } = useSeasons();
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [busy, setBusy] = useState(false);
 
   async function save() {
     if (!draft || !draft.opponent.trim()) { toast.error("Indica el equipo rival"); return; }
+    setBusy(true);
     const payload = {
       opponent: draft.opponent.trim(),
       opponent_crest_url: draft.opponent_crest_url,
