@@ -145,8 +145,10 @@ function Composer() {
 
 function Comments({ postId }: { postId: string }) {
   const qc = useQueryClient();
-  const { session } = useAuth();
+  const { session, isStaff } = useAuth();
   const [text, setText] = useState("");
+  const [replyTo, setReplyTo] = useState<CommentRow | null>(null);
+  const uid = session?.user.id;
 
   const { data: comments = [] } = useQuery({
     queryKey: ["comments", postId],
@@ -163,28 +165,96 @@ function Comments({ postId }: { postId: string }) {
 
   const add = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from("comments")
-        .insert({ post_id: postId, author_id: session!.user.id, content: text.trim() });
+      const { error } = await supabase.from("comments").insert({
+        post_id: postId,
+        author_id: session!.user.id,
+        content: text.trim(),
+        parent_id: replyTo?.id ?? null,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
       setText("");
+      setReplyTo(null);
       qc.invalidateQueries({ queryKey: ["comments", postId] });
+      qc.invalidateQueries({ queryKey: ["comment-counts"] });
     },
-    onError: () => toast.error("No se pudo comentar"),
+    onError: (e) => toast.error(e instanceof Error ? e.message : "No se pudo comentar"),
   });
+
+  const remove = useMutation({
+    mutationFn: async (id: string) => {
+      await supabase.from("comments").delete().eq("parent_id", id);
+      const { error } = await supabase.from("comments").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Comentario eliminado");
+      qc.invalidateQueries({ queryKey: ["comments", postId] });
+      qc.invalidateQueries({ queryKey: ["comment-counts"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "No se pudo eliminar"),
+  });
+
+  const roots = comments.filter((c) => !c.parent_id);
+
+  function renderComment(c: CommentRow, nested = false) {
+    return (
+      <li key={c.id} className={cn("text-sm", nested && "ml-6 border-l border-border pl-3")}>
+        <div className="flex items-start gap-2">
+          <p className="flex-1">
+            <span className="font-semibold">{c.profiles?.display_name ?? "Vikingo"}: </span>
+            <span className="text-muted-foreground">{c.content}</span>
+          </p>
+          {(isStaff || c.author_id === uid) && (
+            <button
+              type="button"
+              aria-label="Eliminar comentario"
+              className="text-muted-foreground hover:text-destructive"
+              disabled={remove.isPending}
+              onClick={() => remove.mutate(c.id)}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+        {!nested && (
+          <button
+            type="button"
+            className="mt-0.5 text-xs font-semibold text-primary"
+            onClick={() => setReplyTo(c)}
+          >
+            Responder
+          </button>
+        )}
+        {!nested && (
+          <ul className="mt-2 space-y-2">
+            {comments.filter((r) => r.parent_id === c.id).map((r) => renderComment(r, true))}
+          </ul>
+        )}
+      </li>
+    );
+  }
 
   return (
     <div className="mt-3 border-t border-border pt-3">
-      <ul className="space-y-2">
-        {comments.map((c) => (
-          <li key={c.id} className="text-sm">
-            <span className="font-semibold">{c.profiles?.display_name ?? "Vikingo"}: </span>
-            <span className="text-muted-foreground">{c.content}</span>
-          </li>
-        ))}
-      </ul>
+      {roots.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Sé el primero en comentar.</p>
+      ) : (
+        <ul className="space-y-2">{roots.map((c) => renderComment(c))}</ul>
+      )}
+      {replyTo && (
+        <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+          Respondiendo a {replyTo.profiles?.display_name ?? "Vikingo"}
+          <button
+            type="button"
+            className="font-semibold text-primary"
+            onClick={() => setReplyTo(null)}
+          >
+            Cancelar
+          </button>
+        </p>
+      )}
       <form
         className="mt-3 flex gap-2"
         onSubmit={(e) => {
@@ -195,11 +265,21 @@ function Comments({ postId }: { postId: string }) {
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Escribe un comentario"
+          placeholder={replyTo ? "Escribe tu respuesta" : "Escribe un comentario"}
           className="h-10"
         />
-        <Button type="submit" size="icon" className="h-10 w-10 shrink-0" disabled={add.isPending}>
-          <Send className="h-4 w-4" />
+        <Button
+          type="submit"
+          size="icon"
+          className="h-10 w-10 shrink-0"
+          aria-label="Enviar comentario"
+          disabled={add.isPending || !text.trim()}
+        >
+          {add.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Send className="h-4 w-4" />
+          )}
         </Button>
       </form>
     </div>
