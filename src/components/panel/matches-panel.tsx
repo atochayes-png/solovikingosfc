@@ -86,6 +86,7 @@ export function MatchesPanel() {
     const { error } = draft.id
       ? await supabase.from("matches").update(payload).eq("id", draft.id)
       : await supabase.from("matches").insert(payload);
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success(draft.id ? "Partido actualizado" : "Partido programado");
     setDraft(null);
@@ -93,10 +94,14 @@ export function MatchesPanel() {
   }
 
   async function remove(id: string) {
+    await supabase.from("match_events").delete().eq("match_id", id);
+    await supabase.from("match_lineup").delete().eq("match_id", id);
+    await supabase.from("media").update({ match_id: null }).eq("match_id", id);
     const { error } = await supabase.from("matches").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Partido eliminado");
     qc.invalidateQueries({ queryKey: ["matches"] });
+    qc.invalidateQueries({ queryKey: ["media"] });
   }
 
   return (
