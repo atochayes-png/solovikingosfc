@@ -234,8 +234,13 @@ export function ResultsPanel() {
                 value={evMinute}
                 onChange={(e) => setEvMinute(e.target.value)}
               />
-              <Button onClick={addEvent}>
-                <Plus className="mr-1 h-4 w-4" /> Agregar
+              <Button onClick={addEvent} disabled={addingEvent}>
+                {addingEvent ? (
+                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="mr-1 h-4 w-4" />
+                )}
+                Agregar
               </Button>
             </div>
             {events.length > 0 && (
@@ -245,9 +250,14 @@ export function ResultsPanel() {
                     <span className="w-24 capitalize text-muted-foreground">{e.event_type}</span>
                     <span className="flex-1 font-semibold">{name(e.player_id)}</span>
                     {e.minute != null && <span className="text-xs">{e.minute}'</span>}
-                    <Button size="icon" variant="ghost" onClick={() => removeEvent(e.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <ConfirmButton
+                      title="¿Eliminar esta incidencia?"
+                      onConfirm={() => removeEvent(e.id)}
+                    >
+                      <Button size="icon" variant="ghost" aria-label="Eliminar incidencia">
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </ConfirmButton>
                   </li>
                 ))}
               </ul>
