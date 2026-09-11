@@ -290,32 +290,68 @@ function Comments({ postId }: { postId: string }) {
 function PostCard({
   post,
   reactions,
+  commentCount,
 }: {
   post: PostRow;
   reactions: ReactionRow[];
+  commentCount: number;
 }) {
   const qc = useQueryClient();
   const { session, isStaff } = useAuth();
   const [openComments, setOpenComments] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(post.content);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [reacting, setReacting] = useState<string | null>(null);
+  const [removing, setRemoving] = useState(false);
   const uid = session?.user.id;
   const canDelete = isStaff || post.author_id === uid;
+  const canEdit = post.author_id === uid;
 
   async function react(emoji: string) {
-    if (!uid) return;
+    if (!uid || reacting) return;
+    setReacting(emoji);
     const mine = reactions.find((r) => r.user_id === uid && r.emoji === emoji);
-    if (mine) await supabase.from("reactions").delete().eq("id", mine.id);
-    else await supabase.from("reactions").insert({ post_id: post.id, user_id: uid, emoji });
+    const { error } = mine
+      ? await supabase.from("reactions").delete().eq("id", mine.id)
+      : await supabase.from("reactions").insert({ post_id: post.id, user_id: uid, emoji });
+    setReacting(null);
+    if (error) { toast.error("No se pudo registrar tu reacción"); return; }
     qc.invalidateQueries({ queryKey: ["reactions"] });
   }
 
+  async function saveEdit() {
+    if (!draft.trim() && !post.media_url) {
+      toast.error("La publicación no puede quedar vacía");
+      return;
+    }
+    setSavingEdit(true);
+    const { error } = await supabase
+      .from("posts")
+      .update({ content: draft.trim() })
+      .eq("id", post.id);
+    setSavingEdit(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Publicación actualizada");
+    setEditing(false);
+    qc.invalidateQueries({ queryKey: ["posts"] });
+  }
+
   async function remove() {
+    setRemoving(true);
+    await supabase.from("reactions").delete().eq("post_id", post.id);
+    await supabase.from("comments").delete().eq("post_id", post.id);
     const { error } = await supabase.from("posts").delete().eq("id", post.id);
+    setRemoving(false);
     if (error) toast.error("No se pudo eliminar");
     else {
       toast.success("Publicación eliminada");
       qc.invalidateQueries({ queryKey: ["posts"] });
+      qc.invalidateQueries({ queryKey: ["comment-counts"] });
+      qc.invalidateQueries({ queryKey: ["reactions"] });
     }
   }
+
 
   return (
     <article className="rounded-xl border border-border bg-card p-4 shadow-card">
