@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { REACTIONS } from "@/lib/brand";
-import { uploadMedia } from "@/lib/storage";
+import { uploadFile } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/tribuna")({
@@ -84,8 +84,9 @@ function Composer() {
       let media_url: string | null = null;
       let media_type: string | null = null;
       if (file) {
-        media_url = await uploadMedia(file, "tribuna");
-        media_type = file.type.startsWith("video") ? "video" : "image";
+        const up = await uploadFile(file, "tribuna");
+        media_url = up.path;
+        media_type = up.type;
       }
       const { error } = await supabase.from("posts").insert({
         author_id: session!.user.id,
