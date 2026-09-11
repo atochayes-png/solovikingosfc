@@ -369,15 +369,54 @@ function PostCard({
             {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: es })}
           </p>
         </div>
-        {canDelete && (
-          <Button size="icon" variant="ghost" onClick={remove} aria-label="Eliminar publicación">
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
+        {canEdit && !editing && (
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Editar publicación"
+            onClick={() => {
+              setDraft(post.content);
+              setEditing(true);
+            }}
+          >
+            <Pencil className="h-4 w-4 text-muted-foreground" />
           </Button>
+        )}
+        {canDelete && (
+          <ConfirmButton
+            title="¿Eliminar esta publicación?"
+            description="También se borrarán sus comentarios y reacciones."
+            onConfirm={remove}
+          >
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label="Eliminar publicación"
+              disabled={removing}
+            >
+              <Trash2 className="h-4 w-4 text-muted-foreground" />
+            </Button>
+          </ConfirmButton>
         )}
       </header>
 
-      {post.content && (
-        <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
+      {editing ? (
+        <div className="mt-3 space-y-2">
+          <Textarea rows={3} value={draft} onChange={(e) => setDraft(e.target.value)} />
+          <div className="flex gap-2">
+            <Button size="sm" onClick={saveEdit} disabled={savingEdit}>
+              {savingEdit && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
+              Guardar
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      ) : (
+        post.content && (
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
+        )
       )}
       {post.media_url && (
         <StorageMedia
