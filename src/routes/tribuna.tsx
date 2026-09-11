@@ -453,7 +453,9 @@ function PostCard({
           className="ml-auto text-muted-foreground"
           onClick={() => setOpenComments((v) => !v)}
         >
-          <MessageCircle className="mr-1.5 h-4 w-4" /> Comentarios
+          <MessageCircle className="mr-1.5 h-4 w-4" />
+          Comentarios
+          {commentCount > 0 && <span className="ml-1 font-bold tabular-nums">{commentCount}</span>}
         </Button>
       </div>
 
@@ -474,6 +476,16 @@ function Tribuna() {
     },
     enabled: !!session,
   });
+  const { data: commentCounts = [] } = useQuery({
+    queryKey: ["comment-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("comments").select("post_id");
+      if (error) throw error;
+      return (data ?? []) as { post_id: string }[];
+    },
+    enabled: !!session,
+  });
+
 
   return (
     <AppShell>
