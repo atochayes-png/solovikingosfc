@@ -321,7 +321,8 @@ export function ResultsPanel() {
             <Textarea rows={5} value={chronicle} onChange={(e) => setChronicle(e.target.value)} />
           </Field>
 
-          <Button className="w-full" onClick={saveResult}>
+          <Button className="w-full" onClick={saveResult} disabled={busy}>
+            {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Guardar resultado y publicar
           </Button>
         </div>
