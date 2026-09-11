@@ -138,6 +138,7 @@ export function UsersPanel() {
 
   async function doReset() {
     if (!resetFor || resetPass.length < 4) { toast.error("Escribe la nueva contraseña"); return; }
+    setResetting(true);
     try {
       await resetUserPassword({ data: { userId: resetFor, password: resetPass } });
       toast.success("Contraseña restablecida");
@@ -145,12 +146,15 @@ export function UsersPanel() {
       setResetPass("");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "No se pudo restablecer");
+    } finally {
+      setResetting(false);
     }
   }
 
   async function toggleActive(userId: string, active: boolean) {
     try {
       await setAccountActive({ data: { userId, active } });
+      toast.success(active ? "Cuenta activada" : "Cuenta desactivada");
       qc.invalidateQueries({ queryKey: ["accounts"] });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "No se pudo actualizar");
