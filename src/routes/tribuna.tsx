@@ -4,13 +4,14 @@ import { useRef, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
-import { ImagePlus, Loader2, MessageCircle, Send, Trash2 } from "lucide-react";
+import { ImagePlus, Loader2, MessageCircle, Pencil, Send, Trash2 } from "lucide-react";
 
 import { AppShell, EmptyState, PageHeader } from "@/components/vk/shell";
 import { StorageImage, StorageMedia } from "@/components/vk/media";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { ConfirmButton } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { REACTIONS } from "@/lib/brand";
@@ -516,6 +517,7 @@ function Tribuna() {
                   key={p.id}
                   post={p}
                   reactions={reactions.filter((r) => r.post_id === p.id)}
+                  commentCount={commentCounts.filter((c) => c.post_id === p.id).length}
                 />
               ))
             )}
