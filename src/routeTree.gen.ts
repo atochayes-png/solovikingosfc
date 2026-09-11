@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AccesoRouteImport } from './routes/acceso'
+import { Route as ClubRouteImport } from './routes/club'
+import { Route as EstadisticasRouteImport } from './routes/estadisticas'
+import { Route as VikingotecaRouteImport } from './routes/vikingoteca'
+import { Route as PartidosIndexRouteImport } from './routes/partidos.index'
+import { Route as PartidosIdRouteImport } from './routes/partidos.$id'
+import { Route as PlantillaIndexRouteImport } from './routes/plantilla.index'
+import { Route as PlantillaIdRouteImport } from './routes/plantilla.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccesoRoute = AccesoRouteImport.update({
+  id: '/acceso',
+  path: '/acceso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClubRoute = ClubRouteImport.update({
+  id: '/club',
+  path: '/club',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstadisticasRoute = EstadisticasRouteImport.update({
+  id: '/estadisticas',
+  path: '/estadisticas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VikingotecaRoute = VikingotecaRouteImport.update({
+  id: '/vikingoteca',
+  path: '/vikingoteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartidosIndexRoute = PartidosIndexRouteImport.update({
+  id: '/partidos/',
+  path: '/partidos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartidosIdRoute = PartidosIdRouteImport.update({
+  id: '/partidos/$id',
+  path: '/partidos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlantillaIndexRoute = PlantillaIndexRouteImport.update({
+  id: '/plantilla/',
+  path: '/plantilla/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlantillaIdRoute = PlantillaIdRouteImport.update({
+  id: '/plantilla/$id',
+  path: '/plantilla/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acceso': typeof AccesoRoute
+  '/club': typeof ClubRoute
+  '/estadisticas': typeof EstadisticasRoute
+  '/vikingoteca': typeof VikingotecaRoute
+  '/partidos/$id': typeof PartidosIdRoute
+  '/plantilla/$id': typeof PlantillaIdRoute
+  '/partidos/': typeof PartidosIndexRoute
+  '/plantilla/': typeof PlantillaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acceso': typeof AccesoRoute
+  '/club': typeof ClubRoute
+  '/estadisticas': typeof EstadisticasRoute
+  '/vikingoteca': typeof VikingotecaRoute
+  '/partidos/$id': typeof PartidosIdRoute
+  '/plantilla/$id': typeof PlantillaIdRoute
+  '/partidos': typeof PartidosIndexRoute
+  '/plantilla': typeof PlantillaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/acceso': typeof AccesoRoute
+  '/club': typeof ClubRoute
+  '/estadisticas': typeof EstadisticasRoute
+  '/vikingoteca': typeof VikingotecaRoute
+  '/partidos/$id': typeof PartidosIdRoute
+  '/plantilla/$id': typeof PlantillaIdRoute
+  '/partidos/': typeof PartidosIndexRoute
+  '/plantilla/': typeof PlantillaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/acceso'
+    | '/club'
+    | '/estadisticas'
+    | '/vikingoteca'
+    | '/partidos/$id'
+    | '/plantilla/$id'
+    | '/partidos/'
+    | '/plantilla/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/acceso'
+    | '/club'
+    | '/estadisticas'
+    | '/vikingoteca'
+    | '/partidos/$id'
+    | '/plantilla/$id'
+    | '/partidos'
+    | '/plantilla'
+  id:
+    | '__root__'
+    | '/'
+    | '/acceso'
+    | '/club'
+    | '/estadisticas'
+    | '/vikingoteca'
+    | '/partidos/$id'
+    | '/plantilla/$id'
+    | '/partidos/'
+    | '/plantilla/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccesoRoute: typeof AccesoRoute
+  ClubRoute: typeof ClubRoute
+  EstadisticasRoute: typeof EstadisticasRoute
+  VikingotecaRoute: typeof VikingotecaRoute
+  PartidosIdRoute: typeof PartidosIdRoute
+  PlantillaIdRoute: typeof PlantillaIdRoute
+  PartidosIndexRoute: typeof PartidosIndexRoute
+  PlantillaIndexRoute: typeof PlantillaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acceso': {
+      id: '/acceso'
+      path: '/acceso'
+      fullPath: '/acceso'
+      preLoaderRoute: typeof AccesoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/club': {
+      id: '/club'
+      path: '/club'
+      fullPath: '/club'
+      preLoaderRoute: typeof ClubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estadisticas': {
+      id: '/estadisticas'
+      path: '/estadisticas'
+      fullPath: '/estadisticas'
+      preLoaderRoute: typeof EstadisticasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vikingoteca': {
+      id: '/vikingoteca'
+      path: '/vikingoteca'
+      fullPath: '/vikingoteca'
+      preLoaderRoute: typeof VikingotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partidos/': {
+      id: '/partidos/'
+      path: '/partidos'
+      fullPath: '/partidos/'
+      preLoaderRoute: typeof PartidosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partidos/$id': {
+      id: '/partidos/$id'
+      path: '/partidos/$id'
+      fullPath: '/partidos/$id'
+      preLoaderRoute: typeof PartidosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plantilla/': {
+      id: '/plantilla/'
+      path: '/plantilla'
+      fullPath: '/plantilla/'
+      preLoaderRoute: typeof PlantillaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plantilla/$id': {
+      id: '/plantilla/$id'
+      path: '/plantilla/$id'
+      fullPath: '/plantilla/$id'
+      preLoaderRoute: typeof PlantillaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccesoRoute: AccesoRoute,
+  ClubRoute: ClubRoute,
+  EstadisticasRoute: EstadisticasRoute,
+  VikingotecaRoute: VikingotecaRoute,
+  PartidosIdRoute: PartidosIdRoute,
+  PlantillaIdRoute: PlantillaIdRoute,
+  PartidosIndexRoute: PartidosIndexRoute,
+  PlantillaIndexRoute: PlantillaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,20 @@
+{
+  "name": "Vikingos FC",
+  "short_name": "Vikingos",
+  "description": "Plataforma oficial de Vikingos FC — Liga de Veteranos, Escuela Modelo, Mérida, Yucatán.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1f3d",
+  "theme_color": "#1b3a7a",
+  "lang": "es-MX",
+  "icons": [
+    {
+      "src": "/__l5e/assets-v1/a2238108-5f63-4fee-a09d-04986af62975/escudo.jpg",
+      "sizes": "640x640",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
