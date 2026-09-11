@@ -208,7 +208,8 @@ export function MatchesPanel() {
                   onCheckedChange={(v) => setDraft({ ...draft, published: v })}
                 />
               </div>
-              <Button className="w-full" onClick={save}>
+              <Button className="w-full" onClick={save} disabled={busy}>
+                {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Guardar
               </Button>
             </div>
@@ -236,6 +237,7 @@ export function MatchesPanel() {
               <Button
                 size="icon"
                 variant="ghost"
+                aria-label="Editar partido"
                 onClick={() =>
                   setDraft({
                     id: m.id,
@@ -254,9 +256,15 @@ export function MatchesPanel() {
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="ghost" onClick={() => remove(m.id)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <ConfirmButton
+                title={`¿Eliminar el partido vs ${m.opponent}?`}
+                description="Se borrarán también su convocatoria y sus incidencias."
+                onConfirm={() => remove(m.id)}
+              >
+                <Button size="icon" variant="ghost" aria-label="Eliminar partido">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </ConfirmButton>
             </li>
           ))}
         </ul>
