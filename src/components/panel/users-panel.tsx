@@ -107,7 +107,7 @@ export function UsersPanel() {
   }
 
   async function doReset() {
-    if (!resetFor || resetPass.length < 4) return toast.error("Escribe la nueva contraseña");
+    if (!resetFor || resetPass.length < 4) { toast.error("Escribe la nueva contraseña"); return; }
     try {
       await resetUserPassword({ data: { userId: resetFor, password: resetPass } });
       toast.success("Contraseña restablecida");

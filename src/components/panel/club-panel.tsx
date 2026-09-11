@@ -45,7 +45,7 @@ export function ClubPanel() {
         city: city.trim(),
       })
       .eq("id", true);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Información del club actualizada");
     qc.invalidateQueries({ queryKey: ["club"] });
   }
@@ -55,7 +55,7 @@ export function ClubPanel() {
     const { error } = await supabase
       .from("seasons")
       .insert({ name: newSeason.trim(), is_current: seasons.length === 0 });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setNewSeason("");
     qc.invalidateQueries({ queryKey: ["seasons"] });
   }
@@ -63,13 +63,13 @@ export function ClubPanel() {
   async function setCurrent(id: string) {
     await supabase.from("seasons").update({ is_current: false }).neq("id", id);
     const { error } = await supabase.from("seasons").update({ is_current: true }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["seasons"] });
   }
 
   async function removeSeason(id: string) {
     const { error } = await supabase.from("seasons").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["seasons"] });
   }
 

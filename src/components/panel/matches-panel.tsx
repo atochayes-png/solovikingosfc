@@ -67,7 +67,7 @@ export function MatchesPanel() {
   const [draft, setDraft] = useState<Draft | null>(null);
 
   async function save() {
-    if (!draft || !draft.opponent.trim()) return toast.error("Indica el equipo rival");
+    if (!draft || !draft.opponent.trim()) { toast.error("Indica el equipo rival"); return; }
     const payload = {
       opponent: draft.opponent.trim(),
       opponent_crest_url: draft.opponent_crest_url,
@@ -83,7 +83,7 @@ export function MatchesPanel() {
     const { error } = draft.id
       ? await supabase.from("matches").update(payload).eq("id", draft.id)
       : await supabase.from("matches").insert(payload);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(draft.id ? "Partido actualizado" : "Partido programado");
     setDraft(null);
     qc.invalidateQueries({ queryKey: ["matches"] });
@@ -91,7 +91,7 @@ export function MatchesPanel() {
 
   async function remove(id: string) {
     const { error } = await supabase.from("matches").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Partido eliminado");
     qc.invalidateQueries({ queryKey: ["matches"] });
   }

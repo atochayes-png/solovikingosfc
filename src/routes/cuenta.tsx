@@ -31,8 +31,8 @@ function Cuenta() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pass.length < 6) return toast.error("La contraseña debe tener al menos 6 caracteres");
-    if (pass !== confirm) return toast.error("Las contraseñas no coinciden");
+    if (pass.length < 6) { toast.error("La contraseña debe tener al menos 6 caracteres"); return; }
+    if (pass !== confirm) { toast.error("Las contraseñas no coinciden"); return; }
     setBusy(true);
     try {
       await changeOwnPassword({ data: { password: pass } });

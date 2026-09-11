@@ -82,28 +82,28 @@ export function ResultsPanel() {
         vikingada_media_url: vkMedia,
       })
       .eq("id", matchId);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Resultado guardado");
     qc.invalidateQueries({ queryKey: ["matches"] });
     qc.invalidateQueries({ queryKey: ["match", matchId] });
   }
 
   async function addEvent() {
-    if (!matchId || !evPlayer) return toast.error("Elige un jugador");
+    if (!matchId || !evPlayer) { toast.error("Elige un jugador"); return; }
     const { error } = await supabase.from("match_events").insert({
       match_id: matchId,
       player_id: evPlayer,
       event_type: evType,
       minute: evMinute ? Number(evMinute) : null,
     });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setEvMinute("");
     qc.invalidateQueries({ queryKey: ["match_events"] });
   }
 
   async function removeEvent(id: string) {
     const { error } = await supabase.from("match_events").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["match_events"] });
   }
 
@@ -112,14 +112,14 @@ export function ResultsPanel() {
       const { error } = await supabase
         .from("match_lineup")
         .insert({ match_id: matchId, player_id: playerId });
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
     } else {
       const { error } = await supabase
         .from("match_lineup")
         .delete()
         .eq("match_id", matchId)
         .eq("player_id", playerId);
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
     }
     qc.invalidateQueries({ queryKey: ["match_lineup"] });
   }

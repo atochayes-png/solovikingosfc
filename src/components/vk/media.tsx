@@ -8,10 +8,10 @@ export function StorageImage({
   className,
   fallback,
 }: {
-  path?: string | null;
+  path?: string | null | undefined;
   alt: string;
-  className?: string;
-  fallback?: React.ReactNode;
+  className?: string | undefined;
+  fallback?: React.ReactNode | undefined;
 }) {
   const url = useMedia(path);
   if (!url) {
@@ -31,11 +31,11 @@ export function StorageMedia({
   className,
   contain,
 }: {
-  path?: string | null;
-  type?: string | null;
+  path?: string | null | undefined;
+  type?: string | null | undefined;
   alt: string;
-  className?: string;
-  contain?: boolean;
+  className?: string | undefined;
+  contain?: boolean | undefined;
 }) {
   const url = useMedia(path);
   if (!url) return null;

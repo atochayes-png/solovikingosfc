@@ -37,7 +37,7 @@ export function MediaPanel() {
   const [featured, setFeatured] = useState(false);
 
   async function save() {
-    if (!url) return toast.error("Sube primero el archivo");
+    if (!url) { toast.error("Sube primero el archivo"); return; }
     const { error } = await supabase.from("media").insert({
       url,
       media_type: type,
@@ -48,7 +48,7 @@ export function MediaPanel() {
       featured,
       uploaded_by: session?.user.id ?? null,
     });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Agregado a la Vikingoteca");
     setUrl(null);
     setTitle("");
@@ -61,7 +61,7 @@ export function MediaPanel() {
 
   async function remove(id: string) {
     const { error } = await supabase.from("media").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["media"] });
   }
 

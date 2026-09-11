@@ -23,7 +23,7 @@ export const Route = createFileRoute("/club")({
   component: Club,
 });
 
-function Section({ title, body }: { title: string; body?: string | null }) {
+function Section({ title, body }: { title: string; body?: string | null | undefined }) {
   if (!body) return null;
   return (
     <article className="rounded-xl border border-border bg-card p-5 shadow-card">
