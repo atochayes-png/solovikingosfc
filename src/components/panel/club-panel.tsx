@@ -1,12 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Field, PanelCard } from "@/components/panel/common";
+import { ConfirmButton, Field, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import { useClub, useSeasons } from "@/lib/queries";
 
@@ -22,6 +22,8 @@ export function ClubPanel() {
   const [league, setLeague] = useState("");
   const [city, setCity] = useState("");
   const [newSeason, setNewSeason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [addingSeason, setAddingSeason] = useState(false);
 
   useEffect(() => {
     if (!club) return;
@@ -34,6 +36,11 @@ export function ClubPanel() {
   }, [club]);
 
   async function save() {
+    if (!league.trim() || !city.trim()) {
+      toast.error("La liga y la ciudad no pueden quedar vacías");
+      return;
+    }
+    setBusy(true);
     const { error } = await supabase
       .from("club_settings")
       .update({
@@ -45,17 +52,21 @@ export function ClubPanel() {
         city: city.trim(),
       })
       .eq("id", true);
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Información del club actualizada");
     qc.invalidateQueries({ queryKey: ["club"] });
   }
 
   async function addSeason() {
-    if (!newSeason.trim()) return;
+    if (!newSeason.trim()) { toast.error("Escribe el nombre de la temporada"); return; }
+    setAddingSeason(true);
     const { error } = await supabase
       .from("seasons")
       .insert({ name: newSeason.trim(), is_current: seasons.length === 0 });
+    setAddingSeason(false);
     if (error) { toast.error(error.message); return; }
+    toast.success("Temporada creada");
     setNewSeason("");
     qc.invalidateQueries({ queryKey: ["seasons"] });
   }
@@ -64,12 +75,14 @@ export function ClubPanel() {
     await supabase.from("seasons").update({ is_current: false }).neq("id", id);
     const { error } = await supabase.from("seasons").update({ is_current: true }).eq("id", id);
     if (error) { toast.error(error.message); return; }
+    toast.success("Temporada actual actualizada");
     qc.invalidateQueries({ queryKey: ["seasons"] });
   }
 
   async function removeSeason(id: string) {
     const { error } = await supabase.from("seasons").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
+    toast.success("Temporada eliminada");
     qc.invalidateQueries({ queryKey: ["seasons"] });
   }
 
@@ -96,7 +109,8 @@ export function ClubPanel() {
         <Field label="Patrocinadores y apoyos">
           <Textarea rows={3} value={sponsors} onChange={(e) => setSponsors(e.target.value)} />
         </Field>
-        <Button className="w-full" onClick={save}>
+        <Button className="w-full" onClick={save} disabled={busy}>
+          {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Guardar información
         </Button>
       </PanelCard>
@@ -107,9 +121,16 @@ export function ClubPanel() {
             placeholder="Ej. Temporada 2026"
             value={newSeason}
             onChange={(e) => setNewSeason(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") void addSeason();
+            }}
           />
-          <Button onClick={addSeason}>
-            <Plus className="h-4 w-4" />
+          <Button onClick={addSeason} disabled={addingSeason} aria-label="Agregar temporada">
+            {addingSeason ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
           </Button>
         </div>
         {seasons.length === 0 ? (
@@ -126,9 +147,15 @@ export function ClubPanel() {
                     Marcar actual
                   </Button>
                 )}
-                <Button size="icon" variant="ghost" onClick={() => removeSeason(s.id)}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
+                <ConfirmButton
+                  title={`¿Eliminar ${s.name}?`}
+                  description="Los partidos asociados quedarán sin temporada."
+                  onConfirm={() => removeSeason(s.id)}
+                >
+                  <Button size="icon" variant="ghost" aria-label="Eliminar temporada">
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </ConfirmButton>
               </li>
             ))}
           </ul>
