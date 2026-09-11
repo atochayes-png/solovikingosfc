@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StorageMedia } from "@/components/vk/media";
-import { Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useMatches, useMediaLibrary } from "@/lib/queries";
@@ -35,9 +35,11 @@ export function MediaPanel() {
   const [category, setCategory] = useState("");
   const [matchId, setMatchId] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   async function save() {
     if (!url) { toast.error("Sube primero el archivo"); return; }
+    setBusy(true);
     const { error } = await supabase.from("media").insert({
       url,
       media_type: type,
