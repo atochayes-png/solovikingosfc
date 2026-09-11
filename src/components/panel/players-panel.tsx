@@ -90,7 +90,7 @@ export function PlayersPanel() {
       ? await supabase.from("players").update(payload).eq("id", draft.id)
       : await supabase.from("players").insert(payload);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(draft.id ? "Jugador actualizado" : "Jugador registrado");
     setDraft(null);
     qc.invalidateQueries({ queryKey: ["players"] });
@@ -98,7 +98,7 @@ export function PlayersPanel() {
 
   async function remove(id: string) {
     const { error } = await supabase.from("players").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Jugador eliminado");
     qc.invalidateQueries({ queryKey: ["players"] });
   }

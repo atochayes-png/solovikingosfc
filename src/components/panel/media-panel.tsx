@@ -1,0 +1,148 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { StorageMedia } from "@/components/vk/media";
+import { Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
+import { useMatches, useMediaLibrary } from "@/lib/queries";
+
+const CATEGORIES = ["Partidos", "Entrenamientos", "Celebraciones", "Torneos", "Histórico"];
+
+export function MediaPanel() {
+  const qc = useQueryClient();
+  const { session } = useAuth();
+  const { data: media = [] } = useMediaLibrary();
+  const { data: matches = [] } = useMatches();
+
+  const [url, setUrl] = useState<string | null>(null);
+  const [type, setType] = useState<"image" | "video">("image");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [matchId, setMatchId] = useState("");
+  const [featured, setFeatured] = useState(false);
+
+  async function save() {
+    if (!url) { toast.error("Sube primero el archivo"); return; }
+    const { error } = await supabase.from("media").insert({
+      url,
+      media_type: type,
+      title: title.trim() || null,
+      description: description.trim() || null,
+      category: category || null,
+      match_id: matchId || null,
+      featured,
+      uploaded_by: session?.user.id ?? null,
+    });
+    if (error) { toast.error(error.message); return; }
+    toast.success("Agregado a la Vikingoteca");
+    setUrl(null);
+    setTitle("");
+    setDescription("");
+    setCategory("");
+    setMatchId("");
+    setFeatured(false);
+    qc.invalidateQueries({ queryKey: ["media"] });
+  }
+
+  async function remove(id: string) {
+    const { error } = await supabase.from("media").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    qc.invalidateQueries({ queryKey: ["media"] });
+  }
+
+  return (
+    <PanelCard title="Vikingoteca">
+      <MediaPicker
+        folder="vikingoteca"
+        label="Foto o video"
+        accept="image/*,video/*"
+        value={url}
+        onChange={(path, t) => {
+          setUrl(path);
+          if (t) setType(t);
+        }}
+      />
+      <Field label="Título">
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+      </Field>
+      <Field label="Descripción">
+        <Textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} />
+      </Field>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Categoría">
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger>
+              <SelectValue placeholder="Elegir" />
+            </SelectTrigger>
+            <SelectContent>
+              {CATEGORIES.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="Partido relacionado">
+          <Select value={matchId} onValueChange={setMatchId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Opcional" />
+            </SelectTrigger>
+            <SelectContent>
+              {matches.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  vs {m.opponent}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+      </div>
+      <div className="flex items-center justify-between rounded-lg bg-secondary px-4 py-3">
+        <span className="text-sm font-semibold">Destacar en la portada</span>
+        <Switch checked={featured} onCheckedChange={setFeatured} />
+      </div>
+      <Button className="w-full" onClick={save}>
+        Agregar a la Vikingoteca
+      </Button>
+
+      {media.length > 0 && (
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+          {media.map((m) => (
+            <div key={m.id} className="relative overflow-hidden rounded-lg border border-border">
+              <StorageMedia
+                path={m.url}
+                type={m.media_type}
+                alt={m.title ?? "Multimedia"}
+                className="aspect-square w-full"
+              />
+              <Button
+                size="icon"
+                variant="secondary"
+                className="absolute right-1 top-1 h-7 w-7"
+                onClick={() => remove(m.id)}
+              >
+                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </PanelCard>
+  );
+}

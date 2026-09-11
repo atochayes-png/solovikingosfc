@@ -14,6 +14,7 @@ import { Route as AccesoRouteImport } from './routes/acceso'
 import { Route as ClubRouteImport } from './routes/club'
 import { Route as CuentaRouteImport } from './routes/cuenta'
 import { Route as EstadisticasRouteImport } from './routes/estadisticas'
+import { Route as PanelRouteImport } from './routes/panel'
 import { Route as TribunaRouteImport } from './routes/tribuna'
 import { Route as VikingotecaRouteImport } from './routes/vikingoteca'
 import { Route as PartidosIndexRouteImport } from './routes/partidos.index'
@@ -44,6 +45,11 @@ const CuentaRoute = CuentaRouteImport.update({
 const EstadisticasRoute = EstadisticasRouteImport.update({
   id: '/estadisticas',
   path: '/estadisticas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanelRoute = PanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TribunaRoute = TribunaRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/club': typeof ClubRoute
   '/cuenta': typeof CuentaRoute
   '/estadisticas': typeof EstadisticasRoute
+  '/panel': typeof PanelRoute
   '/tribuna': typeof TribunaRoute
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/club': typeof ClubRoute
   '/cuenta': typeof CuentaRoute
   '/estadisticas': typeof EstadisticasRoute
+  '/panel': typeof PanelRoute
   '/tribuna': typeof TribunaRoute
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/club': typeof ClubRoute
   '/cuenta': typeof CuentaRoute
   '/estadisticas': typeof EstadisticasRoute
+  '/panel': typeof PanelRoute
   '/tribuna': typeof TribunaRoute
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/club'
     | '/cuenta'
     | '/estadisticas'
+    | '/panel'
     | '/tribuna'
     | '/vikingoteca'
     | '/partidos/$id'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/club'
     | '/cuenta'
     | '/estadisticas'
+    | '/panel'
     | '/tribuna'
     | '/vikingoteca'
     | '/partidos/$id'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/club'
     | '/cuenta'
     | '/estadisticas'
+    | '/panel'
     | '/tribuna'
     | '/vikingoteca'
     | '/partidos/$id'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   ClubRoute: typeof ClubRoute
   CuentaRoute: typeof CuentaRoute
   EstadisticasRoute: typeof EstadisticasRoute
+  PanelRoute: typeof PanelRoute
   TribunaRoute: typeof TribunaRoute
   VikingotecaRoute: typeof VikingotecaRoute
   PartidosIdRoute: typeof PartidosIdRoute
@@ -208,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/estadisticas'
       fullPath: '/estadisticas'
       preLoaderRoute: typeof EstadisticasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panel': {
+      id: '/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof PanelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tribuna': {
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClubRoute: ClubRoute,
   CuentaRoute: CuentaRoute,
   EstadisticasRoute: EstadisticasRoute,
+  PanelRoute: PanelRoute,
   TribunaRoute: TribunaRoute,
   VikingotecaRoute: VikingotecaRoute,
   PartidosIdRoute: PartidosIdRoute,
