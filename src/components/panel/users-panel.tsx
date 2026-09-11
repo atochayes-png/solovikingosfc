@@ -71,6 +71,29 @@ export function UsersPanel() {
   const [busy, setBusy] = useState(false);
   const [resetFor, setResetFor] = useState<string>("");
   const [resetPass, setResetPass] = useState("");
+  const [resetting, setResetting] = useState(false);
+  const [edit, setEdit] = useState<{ id: string; name: string; role: "admin" | "vikingo" } | null>(
+    null,
+  );
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  async function saveEdit() {
+    if (!edit) return;
+    if (edit.name.trim().length < 2) { toast.error("Escribe el nombre completo"); return; }
+    setSavingEdit(true);
+    try {
+      await updateAccount({
+        data: { userId: edit.id, displayName: edit.name.trim(), role: edit.role },
+      });
+      toast.success("Cuenta actualizada");
+      setEdit(null);
+      qc.invalidateQueries({ queryKey: ["accounts"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "No se pudo actualizar");
+    } finally {
+      setSavingEdit(false);
+    }
+  }
 
   async function addAdmin() {
     setBusy(true);
