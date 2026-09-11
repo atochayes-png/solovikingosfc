@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import {
   useLineups,
@@ -51,6 +51,8 @@ export function ResultsPanel() {
   const [evType, setEvType] = useState<MatchEvent["event_type"]>("gol");
   const [evPlayer, setEvPlayer] = useState("");
   const [evMinute, setEvMinute] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [addingEvent, setAddingEvent] = useState(false);
 
   useEffect(() => {
     if (!match) return;
@@ -67,6 +69,11 @@ export function ResultsPanel() {
 
   async function saveResult() {
     if (!matchId) return;
+    if (gf === "" || ga === "") {
+      toast.error("Captura el marcador de ambos equipos");
+      return;
+    }
+    setBusy(true);
     const { error } = await supabase
       .from("matches")
       .update({
