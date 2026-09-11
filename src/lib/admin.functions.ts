@@ -187,6 +187,39 @@ export const setAccountActive = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Edita el nombre visible y el rol de una cuenta. Solo MASTER. */
+export const updateAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { userId: string; displayName: string; role: "admin" | "vikingo" }) =>
+    z
+      .object({
+        userId: z.string().uuid(),
+        displayName: z.string().trim().min(2).max(60),
+        role: z.enum(["admin", "vikingo"]),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await assertRole(context.supabase, context.userId, "master");
+    const db = await admin();
+    const { data: target } = await db.from("user_roles").select("role").eq("user_id", data.userId);
+    if ((target ?? []).some((r) => r.role === "master")) {
+      throw new Error("La cuenta MASTER no puede modificarse");
+    }
+    const { error: pErr } = await db
+      .from("profiles")
+      .update({ display_name: data.displayName })
+      .eq("id", data.userId);
+    if (pErr) throw new Error(pErr.message);
+    const { error: dErr } = await db.from("user_roles").delete().eq("user_id", data.userId);
+    if (dErr) throw new Error(dErr.message);
+    const { error: rErr } = await db
+      .from("user_roles")
+      .insert({ user_id: data.userId, role: data.role });
+    if (rErr) throw new Error(rErr.message);
+    return { ok: true };
+  });
+
 /** Cambio de contraseña del propio usuario autenticado. */
 export const changeOwnPassword = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
