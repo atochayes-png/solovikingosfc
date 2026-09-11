@@ -18,6 +18,7 @@ import { StorageMedia } from "@/components/vk/media";
 import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 import { useMatches, useMediaLibrary } from "@/lib/queries";
 
 const CATEGORIES = ["Partidos", "Entrenamientos", "Celebraciones", "Torneos", "Histórico"];
