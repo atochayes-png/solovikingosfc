@@ -32,7 +32,7 @@ async function admin() {
 }
 
 async function assertRole(
-  supabase: { rpc: (fn: any, args: any) => Promise<{ data: unknown }> },
+  supabase: { rpc: (fn: any, args: any) => PromiseLike<{ data: unknown }> },
   userId: string,
   role: "master" | "staff",
 ) {
