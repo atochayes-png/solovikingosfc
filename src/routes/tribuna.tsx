@@ -436,8 +436,9 @@ function PostCard({
               key={emoji}
               type="button"
               onClick={() => react(emoji)}
+              disabled={reacting === emoji}
               className={cn(
-                "rounded-full border px-2.5 py-1 text-sm transition-colors",
+                "rounded-full border px-2.5 py-1 text-sm transition-colors disabled:opacity-60",
                 mine ? "border-primary bg-primary/10" : "border-border hover:bg-secondary",
               )}
             >
