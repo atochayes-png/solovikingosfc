@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Star, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,7 +128,8 @@ export function MediaPanel() {
         <span className="text-sm font-semibold">Destacar en la portada</span>
         <Switch checked={featured} onCheckedChange={setFeatured} />
       </div>
-      <Button className="w-full" onClick={save}>
+      <Button className="w-full" onClick={save} disabled={busy}>
+        {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         Agregar a la Vikingoteca
       </Button>
 
@@ -145,11 +146,31 @@ export function MediaPanel() {
               <Button
                 size="icon"
                 variant="secondary"
-                className="absolute right-1 top-1 h-7 w-7"
-                onClick={() => remove(m.id)}
+                className="absolute left-1 top-1 h-7 w-7"
+                aria-label={m.featured ? "Quitar de la portada" : "Destacar en la portada"}
+                onClick={() => toggleFeatured(m.id, !m.featured)}
               >
-                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                <Star
+                  className={cn(
+                    "h-3.5 w-3.5",
+                    m.featured ? "fill-accent text-accent" : "text-muted-foreground",
+                  )}
+                />
               </Button>
+              <ConfirmButton
+                title="¿Eliminar este contenido?"
+                description="Se quitará de la Vikingoteca y de la portada."
+                onConfirm={() => remove(m.id)}
+              >
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="absolute right-1 top-1 h-7 w-7"
+                  aria-label="Eliminar contenido"
+                >
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
+              </ConfirmButton>
             </div>
           ))}
         </div>
