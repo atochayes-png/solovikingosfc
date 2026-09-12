@@ -6,6 +6,7 @@ import { ArrowRight, CalendarDays, MapPin, Trophy } from "lucide-react";
 
 import { AppShell, Crest, EmptyState } from "@/components/vk/shell";
 import { MediaGallery, StorageImage, StorageMedia } from "@/components/vk/media";
+import { SponsorsSection } from "@/components/vk/sponsors";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/brand";
 import {
@@ -329,6 +330,8 @@ function Home() {
             <Link to="/tribuna">Entrar a La Tribuna</Link>
           </Button>
         </section>
+
+        <SponsorsSection className="pt-2" />
       </div>
     </AppShell>
   );

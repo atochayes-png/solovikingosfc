@@ -9,6 +9,7 @@ import { ResultsPanel } from "@/components/panel/results-panel";
 import { MediaPanel } from "@/components/panel/media-panel";
 import { ClubPanel } from "@/components/panel/club-panel";
 import { UsersPanel } from "@/components/panel/users-panel";
+import { SponsorsPanel } from "@/components/panel/sponsors-panel";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/panel")({
@@ -65,6 +66,7 @@ function Panel() {
             <TabsTrigger value="vikingoteca">Vikingoteca</TabsTrigger>
             <TabsTrigger value="club">El Club</TabsTrigger>
             <TabsTrigger value="cuentas">Cuentas</TabsTrigger>
+            {isMaster && <TabsTrigger value="patrocinadores">Patrocinadores</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="jugadores" className="mt-4">
@@ -85,6 +87,11 @@ function Panel() {
           <TabsContent value="cuentas" className="mt-4 space-y-4">
             <UsersPanel />
           </TabsContent>
+          {isMaster && (
+            <TabsContent value="patrocinadores" className="mt-4 space-y-4">
+              <SponsorsPanel />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </AppShell>

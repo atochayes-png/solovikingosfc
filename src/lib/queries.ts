@@ -184,6 +184,29 @@ export function useMediaLibrary() {
   });
 }
 
+export type Sponsor = {
+  id: string;
+  name: string;
+  logo_url: string;
+  destination_url: string;
+  is_active: boolean;
+  display_order: number;
+};
+
+export function useSponsors() {
+  return useQuery({
+    queryKey: ["sponsors"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sponsors")
+        .select("id,name,logo_url,destination_url,is_active,display_order")
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as Sponsor[];
+    },
+  });
+}
+
 export type PlayerTotals = {
   pj: number;
   goles: number;
