@@ -215,6 +215,7 @@ export type Database = {
           updated_at: string
           venue: string | null
           vikingada_description: string | null
+          vikingada_display_mode: string
           vikingada_media_url: string | null
           vikingada_player_id: string | null
           vikingada_title: string | null
@@ -239,6 +240,7 @@ export type Database = {
           updated_at?: string
           venue?: string | null
           vikingada_description?: string | null
+          vikingada_display_mode?: string
           vikingada_media_url?: string | null
           vikingada_player_id?: string | null
           vikingada_title?: string | null
@@ -263,6 +265,7 @@ export type Database = {
           updated_at?: string
           venue?: string | null
           vikingada_description?: string | null
+          vikingada_display_mode?: string
           vikingada_media_url?: string | null
           vikingada_player_id?: string | null
           vikingada_title?: string | null
@@ -310,6 +313,7 @@ export type Database = {
           category: string | null
           created_at: string
           description: string | null
+          display_mode: string
           event_name: string | null
           featured: boolean
           id: string
@@ -324,6 +328,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          display_mode?: string
           event_name?: string | null
           featured?: boolean
           id?: string
@@ -338,6 +343,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          display_mode?: string
           event_name?: string | null
           featured?: boolean
           id?: string
@@ -382,6 +388,7 @@ export type Database = {
           jersey_number: number | null
           joined_on: string | null
           nickname: string | null
+          photo_display_mode: string
           photo_url: string | null
           position: string | null
           profile_id: string | null
@@ -396,6 +403,7 @@ export type Database = {
           jersey_number?: number | null
           joined_on?: string | null
           nickname?: string | null
+          photo_display_mode?: string
           photo_url?: string | null
           position?: string | null
           profile_id?: string | null
@@ -410,6 +418,7 @@ export type Database = {
           jersey_number?: number | null
           joined_on?: string | null
           nickname?: string | null
+          photo_display_mode?: string
           photo_url?: string | null
           position?: string | null
           profile_id?: string | null
@@ -425,11 +434,50 @@ export type Database = {
           },
         ]
       }
+      post_media: {
+        Row: {
+          created_at: string
+          display_mode: string
+          id: string
+          media_type: string
+          post_id: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          display_mode?: string
+          id?: string
+          media_type?: string
+          post_id: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          created_at?: string
+          display_mode?: string
+          id?: string
+          media_type?: string
+          post_id?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_media_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author_id: string
           content: string
           created_at: string
+          display_mode: string
           id: string
           media_type: string | null
           media_url: string | null
@@ -439,6 +487,7 @@ export type Database = {
           author_id: string
           content: string
           created_at?: string
+          display_mode?: string
           id?: string
           media_type?: string | null
           media_url?: string | null
@@ -448,6 +497,7 @@ export type Database = {
           author_id?: string
           content?: string
           created_at?: string
+          display_mode?: string
           id?: string
           media_type?: string | null
           media_url?: string | null
