@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  ConfirmButton,
   Field,
   MediaPicker,
   PanelCard,
@@ -65,9 +66,11 @@ export function MatchesPanel() {
   const { data: matches = [] } = useMatches();
   const { data: seasons = [] } = useSeasons();
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [busy, setBusy] = useState(false);
 
   async function save() {
     if (!draft || !draft.opponent.trim()) { toast.error("Indica el equipo rival"); return; }
+    setBusy(true);
     const payload = {
       opponent: draft.opponent.trim(),
       opponent_crest_url: draft.opponent_crest_url,
@@ -83,6 +86,7 @@ export function MatchesPanel() {
     const { error } = draft.id
       ? await supabase.from("matches").update(payload).eq("id", draft.id)
       : await supabase.from("matches").insert(payload);
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success(draft.id ? "Partido actualizado" : "Partido programado");
     setDraft(null);
@@ -90,10 +94,14 @@ export function MatchesPanel() {
   }
 
   async function remove(id: string) {
+    await supabase.from("match_events").delete().eq("match_id", id);
+    await supabase.from("match_lineup").delete().eq("match_id", id);
+    await supabase.from("media").update({ match_id: null }).eq("match_id", id);
     const { error } = await supabase.from("matches").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success("Partido eliminado");
     qc.invalidateQueries({ queryKey: ["matches"] });
+    qc.invalidateQueries({ queryKey: ["media"] });
   }
 
   return (
@@ -200,7 +208,8 @@ export function MatchesPanel() {
                   onCheckedChange={(v) => setDraft({ ...draft, published: v })}
                 />
               </div>
-              <Button className="w-full" onClick={save}>
+              <Button className="w-full" onClick={save} disabled={busy}>
+                {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Guardar
               </Button>
             </div>
@@ -228,6 +237,7 @@ export function MatchesPanel() {
               <Button
                 size="icon"
                 variant="ghost"
+                aria-label="Editar partido"
                 onClick={() =>
                   setDraft({
                     id: m.id,
@@ -246,9 +256,15 @@ export function MatchesPanel() {
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="ghost" onClick={() => remove(m.id)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <ConfirmButton
+                title={`¿Eliminar el partido vs ${m.opponent}?`}
+                description="Se borrarán también su convocatoria y sus incidencias."
+                onConfirm={() => remove(m.id)}
+              >
+                <Button size="icon" variant="ghost" aria-label="Eliminar partido">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </ConfirmButton>
             </li>
           ))}
         </ul>

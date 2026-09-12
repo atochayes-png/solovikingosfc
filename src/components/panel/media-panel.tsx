@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { Loader2, Star, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +15,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StorageMedia } from "@/components/vk/media";
-import { Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 import { useMatches, useMediaLibrary } from "@/lib/queries";
 
 const CATEGORIES = ["Partidos", "Entrenamientos", "Celebraciones", "Torneos", "Histórico"];
@@ -35,9 +36,11 @@ export function MediaPanel() {
   const [category, setCategory] = useState("");
   const [matchId, setMatchId] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   async function save() {
     if (!url) { toast.error("Sube primero el archivo"); return; }
+    setBusy(true);
     const { error } = await supabase.from("media").insert({
       url,
       media_type: type,
@@ -48,6 +51,7 @@ export function MediaPanel() {
       featured,
       uploaded_by: session?.user.id ?? null,
     });
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Agregado a la Vikingoteca");
     setUrl(null);
@@ -62,6 +66,14 @@ export function MediaPanel() {
   async function remove(id: string) {
     const { error } = await supabase.from("media").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
+    toast.success("Elemento eliminado");
+    qc.invalidateQueries({ queryKey: ["media"] });
+  }
+
+  async function toggleFeatured(id: string, value: boolean) {
+    const { error } = await supabase.from("media").update({ featured: value }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(value ? "Destacado en la portada" : "Quitado de la portada");
     qc.invalidateQueries({ queryKey: ["media"] });
   }
 
@@ -117,7 +129,8 @@ export function MediaPanel() {
         <span className="text-sm font-semibold">Destacar en la portada</span>
         <Switch checked={featured} onCheckedChange={setFeatured} />
       </div>
-      <Button className="w-full" onClick={save}>
+      <Button className="w-full" onClick={save} disabled={busy}>
+        {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         Agregar a la Vikingoteca
       </Button>
 
@@ -134,11 +147,31 @@ export function MediaPanel() {
               <Button
                 size="icon"
                 variant="secondary"
-                className="absolute right-1 top-1 h-7 w-7"
-                onClick={() => remove(m.id)}
+                className="absolute left-1 top-1 h-7 w-7"
+                aria-label={m.featured ? "Quitar de la portada" : "Destacar en la portada"}
+                onClick={() => toggleFeatured(m.id, !m.featured)}
               >
-                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                <Star
+                  className={cn(
+                    "h-3.5 w-3.5",
+                    m.featured ? "fill-accent text-accent" : "text-muted-foreground",
+                  )}
+                />
               </Button>
+              <ConfirmButton
+                title="¿Eliminar este contenido?"
+                description="Se quitará de la Vikingoteca y de la portada."
+                onConfirm={() => remove(m.id)}
+              >
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="absolute right-1 top-1 h-7 w-7"
+                  aria-label="Eliminar contenido"
+                >
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
+              </ConfirmButton>
             </div>
           ))}
         </div>

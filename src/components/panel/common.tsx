@@ -3,10 +3,72 @@ import { toast } from "sonner";
 import { Loader2, Upload } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StorageImage } from "@/components/vk/media";
 import { uploadFile } from "@/lib/storage";
+
+/** Botón destructivo con confirmación y estado de carga. */
+export function ConfirmButton({
+  onConfirm,
+  title,
+  description,
+  children,
+  confirmLabel = "Eliminar",
+  className,
+}: {
+  onConfirm: () => Promise<void> | void;
+  title: string;
+  description?: string;
+  children: ReactNode;
+  confirmLabel?: string;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <AlertDialog open={open} onOpenChange={(v) => !busy && setOpen(v)}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent className={className}>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={busy}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={busy}
+            onClick={async (e) => {
+              e.preventDefault();
+              setBusy(true);
+              try {
+                await onConfirm();
+                setOpen(false);
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {confirmLabel}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 
 export function Field({
   label,

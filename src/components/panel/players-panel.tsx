@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StorageImage } from "@/components/vk/media";
-import { Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import { POSITIONS } from "@/lib/brand";
 import { usePlayers, type Player } from "@/lib/queries";
@@ -183,6 +183,7 @@ export function PlayersPanel() {
                 />
               </div>
               <Button className="w-full" onClick={save} disabled={busy}>
+                {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Guardar
               </Button>
             </div>
@@ -206,12 +207,23 @@ export function PlayersPanel() {
                   {p.position ?? "Sin posición"} {p.active ? "" : "· inactivo"}
                 </p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => setDraft(toDraft(p))}>
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label="Editar jugador"
+                onClick={() => setDraft(toDraft(p))}
+              >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="ghost" onClick={() => remove(p.id)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <ConfirmButton
+                title={`¿Eliminar a ${p.full_name}?`}
+                description="Se borrará su ficha del club. Si solo dejó de jugar, desactívalo desde Editar."
+                onConfirm={() => remove(p.id)}
+              >
+                <Button size="icon" variant="ghost" aria-label="Eliminar jugador">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </ConfirmButton>
             </li>
           ))}
         </ul>

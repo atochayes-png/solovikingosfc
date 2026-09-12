@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
 import { supabase } from "@/integrations/supabase/client";
 import {
   useLineups,
@@ -51,6 +51,8 @@ export function ResultsPanel() {
   const [evType, setEvType] = useState<MatchEvent["event_type"]>("gol");
   const [evPlayer, setEvPlayer] = useState("");
   const [evMinute, setEvMinute] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [addingEvent, setAddingEvent] = useState(false);
 
   useEffect(() => {
     if (!match) return;
@@ -67,6 +69,11 @@ export function ResultsPanel() {
 
   async function saveResult() {
     if (!matchId) return;
+    if (gf === "" || ga === "") {
+      toast.error("Captura el marcador de ambos equipos");
+      return;
+    }
+    setBusy(true);
     const { error } = await supabase
       .from("matches")
       .update({
@@ -82,21 +89,26 @@ export function ResultsPanel() {
         vikingada_media_url: vkMedia,
       })
       .eq("id", matchId);
+    setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("Resultado guardado");
+    toast.success("Resultado publicado. Ficha, estadísticas e inicio actualizados.");
     qc.invalidateQueries({ queryKey: ["matches"] });
     qc.invalidateQueries({ queryKey: ["match", matchId] });
+    qc.invalidateQueries({ queryKey: ["match_events"] });
   }
 
   async function addEvent() {
     if (!matchId || !evPlayer) { toast.error("Elige un jugador"); return; }
+    setAddingEvent(true);
     const { error } = await supabase.from("match_events").insert({
       match_id: matchId,
       player_id: evPlayer,
       event_type: evType,
       minute: evMinute ? Number(evMinute) : null,
     });
+    setAddingEvent(false);
     if (error) { toast.error(error.message); return; }
+    toast.success("Incidencia registrada");
     setEvMinute("");
     qc.invalidateQueries({ queryKey: ["match_events"] });
   }
@@ -104,6 +116,7 @@ export function ResultsPanel() {
   async function removeEvent(id: string) {
     const { error } = await supabase.from("match_events").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
+    toast.success("Incidencia eliminada");
     qc.invalidateQueries({ queryKey: ["match_events"] });
   }
 
@@ -221,8 +234,13 @@ export function ResultsPanel() {
                 value={evMinute}
                 onChange={(e) => setEvMinute(e.target.value)}
               />
-              <Button onClick={addEvent}>
-                <Plus className="mr-1 h-4 w-4" /> Agregar
+              <Button onClick={addEvent} disabled={addingEvent}>
+                {addingEvent ? (
+                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="mr-1 h-4 w-4" />
+                )}
+                Agregar
               </Button>
             </div>
             {events.length > 0 && (
@@ -232,9 +250,14 @@ export function ResultsPanel() {
                     <span className="w-24 capitalize text-muted-foreground">{e.event_type}</span>
                     <span className="flex-1 font-semibold">{name(e.player_id)}</span>
                     {e.minute != null && <span className="text-xs">{e.minute}'</span>}
-                    <Button size="icon" variant="ghost" onClick={() => removeEvent(e.id)}>
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <ConfirmButton
+                      title="¿Eliminar esta incidencia?"
+                      onConfirm={() => removeEvent(e.id)}
+                    >
+                      <Button size="icon" variant="ghost" aria-label="Eliminar incidencia">
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </ConfirmButton>
                   </li>
                 ))}
               </ul>
@@ -298,7 +321,8 @@ export function ResultsPanel() {
             <Textarea rows={5} value={chronicle} onChange={(e) => setChronicle(e.target.value)} />
           </Field>
 
-          <Button className="w-full" onClick={saveResult}>
+          <Button className="w-full" onClick={saveResult} disabled={busy}>
+            {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Guardar resultado y publicar
           </Button>
         </div>
