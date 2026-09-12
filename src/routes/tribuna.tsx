@@ -151,7 +151,7 @@ function Composer() {
       />
       {files.length > 0 && (
         <div className="mt-3 space-y-3">
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid items-start gap-2 sm:grid-cols-2">
             {files.map((file) => (
               <LocalMediaPreview key={`${file.name}-${file.lastModified}`} file={file} displayMode={displayMode} />
             ))}
