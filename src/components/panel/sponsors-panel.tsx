@@ -48,10 +48,18 @@ export function SponsorsPanel() {
 
   async function save() {
     if (!draft) return;
-    if (!draft.name.trim()) return toast.error("Escribe el nombre del patrocinador");
-    if (!draft.logo_url) return toast.error("Sube el logotipo");
-    if (!isValidUrl(draft.destination_url.trim()))
-      return toast.error("El enlace debe ser una URL válida (https://...)");
+    if (!draft.name.trim()) {
+      toast.error("Escribe el nombre del patrocinador");
+      return;
+    }
+    if (!draft.logo_url) {
+      toast.error("Sube el logotipo");
+      return;
+    }
+    if (!isValidUrl(draft.destination_url.trim())) {
+      toast.error("El enlace debe ser una URL válida (https://...)");
+      return;
+    }
 
     setBusy(true);
     try {
@@ -81,14 +89,20 @@ export function SponsorsPanel() {
       .from("sponsors")
       .update({ is_active: !sponsor.is_active })
       .eq("id", sponsor.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success(sponsor.is_active ? "Patrocinador desactivado" : "Patrocinador activado");
     await refresh();
   }
 
   async function remove(sponsor: Sponsor) {
     const { error } = await supabase.from("sponsors").delete().eq("id", sponsor.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     await supabase.storage.from("vikingos").remove([sponsor.logo_url]);
     toast.success("Patrocinador eliminado");
     await refresh();
@@ -202,7 +216,9 @@ export function SponsorsPanel() {
                 <ConfirmButton
                   title="¿Eliminar patrocinador?"
                   description="Se quitará de Inicio y se borrará su logotipo."
-                  onConfirm={() => remove(s)}
+                  onConfirm={async () => {
+                    await remove(s);
+                  }}
                 >
                   <Button size="icon" variant="ghost" aria-label={`Eliminar ${s.name}`}>
                     <Trash2 className="h-4 w-4 text-destructive" />
