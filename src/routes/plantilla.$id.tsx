@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 import { AppShell, EmptyState } from "@/components/vk/shell";
-import { StorageImage } from "@/components/vk/media";
+import { StorageMedia } from "@/components/vk/media";
 import {
   computePlayerTotals,
   emptyTotals,
@@ -52,10 +52,12 @@ function FichaJugador() {
   return (
     <AppShell>
       <div className="relative">
-        <StorageImage
+        <StorageMedia
           path={player.photo_url}
+          type="image"
           alt={player.full_name}
-          className="h-72 w-full sm:h-96"
+          displayMode={player.photo_display_mode}
+          className="max-h-[70vh] w-full"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,oklch(0.18_0.06_262/0.92)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-5 pb-5 text-white">

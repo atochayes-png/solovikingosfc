@@ -2,11 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { AppShell, EmptyState, PageHeader } from "@/components/vk/shell";
-import { StorageMedia } from "@/components/vk/media";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { MediaGallery } from "@/components/vk/media";
 import { cn } from "@/lib/utils";
-import { useMediaLibrary, type MediaItem } from "@/lib/queries";
+import { useMediaLibrary } from "@/lib/queries";
 
 export const Route = createFileRoute("/vikingoteca")({
   head: () => ({
@@ -27,7 +26,6 @@ export const Route = createFileRoute("/vikingoteca")({
 function Vikingoteca() {
   const { data: media = [], isLoading } = useMediaLibrary();
   const [filter, setFilter] = useState<string>("todo");
-  const [open, setOpen] = useState<MediaItem | null>(null);
 
   const categories = useMemo(
     () => Array.from(new Set(media.map((m) => m.category).filter(Boolean))) as string[],
@@ -66,48 +64,16 @@ function Vikingoteca() {
             hint="Las fotos y videos que suba el club aparecerán aquí."
           />
         ) : (
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-            {items.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => setOpen(m)}
-                className="overflow-hidden rounded-lg border border-border bg-card text-left"
-              >
-                <StorageMedia
-                  path={m.url}
-                  type={m.media_type}
-                  alt={m.title ?? "Multimedia del club"}
-                  className="aspect-square w-full"
-                />
-                {m.title && (
-                  <p className="truncate px-2 py-1.5 text-xs font-semibold">{m.title}</p>
-                )}
-              </button>
-            ))}
-          </div>
+          <MediaGallery
+            items={items.map((m) => ({
+              url: m.url,
+              type: m.media_type,
+              alt: m.title ?? "Multimedia del club",
+              displayMode: m.display_mode,
+            }))}
+          />
         )}
       </div>
-
-      <Dialog open={!!open} onOpenChange={(v) => !v && setOpen(null)}>
-        <DialogContent className="max-w-3xl">
-          <DialogTitle className="font-display text-lg font-extrabold">
-            {open?.title ?? "Vikingoteca"}
-          </DialogTitle>
-          {open && (
-            <StorageMedia
-              path={open.url}
-              type={open.media_type}
-              alt={open.title ?? "Multimedia del club"}
-              className="max-h-[70vh] w-full rounded-lg"
-              contain
-            />
-          )}
-          {open?.description && (
-            <p className="text-sm text-muted-foreground">{open.description}</p>
-          )}
-        </DialogContent>
-      </Dialog>
     </AppShell>
   );
 }
