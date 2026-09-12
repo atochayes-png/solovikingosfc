@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   DisplayModeSelector,
-  StorageImage,
   StorageMedia,
   type DisplayMode,
 } from "@/components/vk/media";

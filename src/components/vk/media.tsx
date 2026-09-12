@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, ImageOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,7 @@ export function StorageMedia({
   controls?: boolean;
 }) {
   const url = useMedia(path);
+  const [orientation, setOrientation] = useState<"vertical" | "horizontal" | "square" | null>(null);
   if (!url) {
     return (
       <div className={cn("grid min-h-32 place-items-center bg-secondary", className)}>
@@ -71,7 +72,11 @@ export function StorageMedia({
   }
   const mode = displayMode ?? "auto";
   const framed = mode !== "auto";
-  const frameClass = framed ? modeFrame[mode] : "w-full";
+  const frameClass = framed
+    ? modeFrame[mode]
+    : orientation === "vertical"
+      ? "w-full max-w-xl"
+      : "w-full";
 
   const media = type === "video" ? (
     <video
@@ -79,6 +84,16 @@ export function StorageMedia({
       controls={controls}
       playsInline
       preload="metadata"
+      onLoadedMetadata={(event) => {
+        const { videoWidth, videoHeight } = event.currentTarget;
+        setOrientation(
+          Math.abs(videoWidth - videoHeight) / Math.max(videoWidth, videoHeight) < 0.08
+            ? "square"
+            : videoHeight > videoWidth
+              ? "vertical"
+              : "horizontal",
+        );
+      }}
       className={cn(
         "block max-h-[78vh] w-full bg-secondary",
         framed ? "h-full object-contain" : "h-auto object-contain",
@@ -89,6 +104,16 @@ export function StorageMedia({
       src={url}
       alt={alt}
       loading="lazy"
+      onLoad={(event) => {
+        const { naturalWidth, naturalHeight } = event.currentTarget;
+        setOrientation(
+          Math.abs(naturalWidth - naturalHeight) / Math.max(naturalWidth, naturalHeight) < 0.08
+            ? "square"
+            : naturalHeight > naturalWidth
+              ? "vertical"
+              : "horizontal",
+        );
+      }}
       className={cn(
         "block max-h-[78vh] w-full bg-secondary",
         framed || contain ? "h-full object-contain" : "h-auto object-contain",

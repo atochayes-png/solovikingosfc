@@ -26,6 +26,7 @@ import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel
 import { supabase } from "@/integrations/supabase/client";
 import { POSITIONS } from "@/lib/brand";
 import { usePlayers, type Player } from "@/lib/queries";
+import type { DisplayMode } from "@/components/vk/media";
 
 type Draft = {
   id?: string;
@@ -34,6 +35,7 @@ type Draft = {
   jersey_number: string;
   position: string;
   photo_url: string | null;
+  photo_display_mode: DisplayMode;
   joined_on: string;
   bio: string;
   active: boolean;
@@ -45,6 +47,7 @@ const empty: Draft = {
   jersey_number: "",
   position: "",
   photo_url: null,
+  photo_display_mode: "auto",
   joined_on: "",
   bio: "",
   active: true,
@@ -58,6 +61,7 @@ function toDraft(p: Player): Draft {
     jersey_number: p.jersey_number != null ? String(p.jersey_number) : "",
     position: p.position ?? "",
     photo_url: p.photo_url,
+    photo_display_mode: p.photo_display_mode,
     joined_on: p.joined_on ?? "",
     bio: p.bio ?? "",
     active: p.active,
@@ -82,6 +86,7 @@ export function PlayersPanel() {
       jersey_number: draft.jersey_number ? Number(draft.jersey_number) : null,
       position: draft.position || null,
       photo_url: draft.photo_url,
+      photo_display_mode: draft.photo_display_mode,
       joined_on: draft.joined_on || null,
       bio: draft.bio.trim() || null,
       active: draft.active,
@@ -160,6 +165,11 @@ export function PlayersPanel() {
                 label="Fotografía"
                 value={draft.photo_url}
                 onChange={(path) => setDraft({ ...draft, photo_url: path })}
+                displayMode={draft.photo_display_mode}
+                onDisplayModeChange={(photo_display_mode) =>
+                  setDraft({ ...draft, photo_display_mode })
+                }
+                recommendedVertical
               />
               <Field label="En el club desde">
                 <Input
