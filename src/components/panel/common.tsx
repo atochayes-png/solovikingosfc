@@ -16,7 +16,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { StorageImage } from "@/components/vk/media";
+import {
+  DisplayModeSelector,
+  StorageImage,
+  StorageMedia,
+  type DisplayMode,
+} from "@/components/vk/media";
 import { uploadFile } from "@/lib/storage";
 
 /** Botón destructivo con confirmación y estado de carga. */
@@ -106,12 +111,18 @@ export function MediaPicker({
   onChange,
   label = "Archivo",
   accept = "image/*",
+  displayMode = "auto",
+  onDisplayModeChange,
+  recommendedVertical = false,
 }: {
   folder: string;
   value: string | null;
   onChange: (path: string | null, type?: "image" | "video") => void;
   label?: string;
   accept?: string;
+  displayMode?: DisplayMode;
+  onDisplayModeChange?: (mode: DisplayMode) => void;
+  recommendedVertical?: boolean;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -134,8 +145,14 @@ export function MediaPicker({
   return (
     <Field label={label}>
       <div className="flex items-center gap-3">
-        {value && !value.match(/\.(mp4|mov|webm)$/i) && (
-          <StorageImage path={value} alt="Vista previa" className="h-16 w-16 rounded-lg" />
+        {value && (
+          <StorageMedia
+            path={value}
+            type={value.match(/\.(mp4|mov|webm)$/i) ? "video" : "image"}
+            alt="Vista previa"
+            displayMode={displayMode}
+            className="max-h-72 rounded-lg"
+          />
         )}
         <Button type="button" variant="outline" disabled={busy} onClick={() => ref.current?.click()}>
           {busy ? (
@@ -158,6 +175,13 @@ export function MediaPicker({
         className="hidden"
         onChange={(e) => handle(e.target.files?.[0])}
       />
+      {onDisplayModeChange && (
+        <DisplayModeSelector
+          value={displayMode}
+          onChange={onDisplayModeChange}
+          recommended={recommendedVertical}
+        />
+      )}
     </Field>
   );
 }
