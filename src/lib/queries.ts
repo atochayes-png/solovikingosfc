@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { DisplayMode } from "@/components/vk/media";
 
 export type Season = { id: string; name: string; is_current: boolean };
 
@@ -10,6 +11,7 @@ export type Player = {
   jersey_number: number | null;
   position: string | null;
   photo_url: string | null;
+  photo_display_mode: DisplayMode;
   active: boolean;
   joined_on: string | null;
   bio: string | null;
@@ -36,6 +38,7 @@ export type Match = {
   vikingada_title: string | null;
   vikingada_description: string | null;
   vikingada_media_url: string | null;
+  vikingada_display_mode: DisplayMode;
   published: boolean;
 };
 
@@ -72,6 +75,7 @@ export type MediaItem = {
   match_id: string | null;
   uploaded_by: string | null;
   featured: boolean;
+  display_mode: DisplayMode;
   created_at: string;
 };
 

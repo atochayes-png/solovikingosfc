@@ -4,7 +4,7 @@ import { es } from "date-fns/locale";
 import { CalendarDays, MapPin, Trophy, Laugh } from "lucide-react";
 
 import { AppShell, EmptyState, PageHeader } from "@/components/vk/shell";
-import { StorageImage, StorageMedia } from "@/components/vk/media";
+import { MediaGallery, StorageMedia } from "@/components/vk/media";
 import { Badge } from "@/components/ui/badge";
 import { useMatch, useMatchEvents, useMediaLibrary, usePlayers } from "@/lib/queries";
 
@@ -135,8 +135,14 @@ function FichaPartido() {
 
         {mvp && (
           <section className="overflow-hidden rounded-xl border border-accent/50 bg-card shadow-card">
-            <div className="flex items-stretch">
-              <StorageImage path={mvp.photo_url} alt={mvp.full_name} className="w-28 shrink-0" />
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-stretch">
+              <StorageMedia
+                path={mvp.photo_url}
+                type="image"
+                alt={mvp.full_name}
+                displayMode={mvp.photo_display_mode}
+                className="w-28 shrink-0"
+              />
               <div className="flex flex-col justify-center p-4">
                 <p className="eyebrow flex items-center gap-1.5 text-accent-foreground">
                   <Trophy className="h-3.5 w-3.5" /> MVP del partido
@@ -179,6 +185,7 @@ function FichaPartido() {
                 path={match.vikingada_media_url}
                 type={match.vikingada_media_url.match(/\.(mp4|mov|webm)$/i) ? "video" : "image"}
                 alt="Momento de La Vikingada de la Jornada"
+                displayMode={match.vikingada_display_mode}
                 className="mt-4 w-full rounded-lg"
               />
             )}
@@ -195,17 +202,15 @@ function FichaPartido() {
         {gallery.length > 0 && (
           <section>
             <p className="eyebrow text-muted-foreground">Galería del partido</p>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {gallery.map((m) => (
-                <StorageMedia
-                  key={m.id}
-                  path={m.url}
-                  type={m.media_type}
-                  alt={m.title ?? "Fotografía del partido"}
-                  className="aspect-square w-full rounded-lg"
-                />
-              ))}
-            </div>
+            <MediaGallery
+              className="mt-3"
+              items={gallery.map((m) => ({
+                url: m.url,
+                type: m.media_type,
+                alt: m.title ?? "Fotografía del partido",
+                displayMode: m.display_mode,
+              }))}
+            />
           </section>
         )}
       </div>

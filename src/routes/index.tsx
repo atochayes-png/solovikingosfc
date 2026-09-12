@@ -5,7 +5,7 @@ import { es } from "date-fns/locale";
 import { ArrowRight, CalendarDays, MapPin, Trophy } from "lucide-react";
 
 import { AppShell, Crest, EmptyState } from "@/components/vk/shell";
-import { StorageImage } from "@/components/vk/media";
+import { MediaGallery, StorageImage, StorageMedia } from "@/components/vk/media";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/brand";
 import {
@@ -277,11 +277,13 @@ function Home() {
 
         {mvpPlayer && (
           <section className="overflow-hidden rounded-xl border border-accent/40 bg-card shadow-card">
-            <div className="flex items-stretch">
-              <StorageImage
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-stretch">
+              <StorageMedia
                 path={mvpPlayer.photo_url}
+                type="image"
                 alt={mvpPlayer.full_name}
-                className="h-32 w-28 shrink-0"
+                displayMode={mvpPlayer.photo_display_mode}
+                className="w-28 shrink-0"
               />
               <div className="flex flex-col justify-center p-4">
                 <p className="eyebrow flex items-center gap-1.5 text-accent-foreground">
@@ -306,16 +308,15 @@ function Home() {
                 <Link to="/vikingoteca">Vikingoteca</Link>
               </Button>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {featured.map((m) => (
-                <StorageImage
-                  key={m.id}
-                  path={m.url}
-                  alt={m.title ?? "Fotografía del club"}
-                  className="aspect-square w-full rounded-lg"
-                />
-              ))}
-            </div>
+            <MediaGallery
+              className="mt-3 sm:columns-4"
+              items={featured.map((m) => ({
+                url: m.url,
+                type: m.media_type,
+                alt: m.title ?? "Fotografía del club",
+                displayMode: m.display_mode,
+              }))}
+            />
           </section>
         )}
 

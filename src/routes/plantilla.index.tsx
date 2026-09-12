@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AppShell, EmptyState, PageHeader } from "@/components/vk/shell";
-import { StorageImage } from "@/components/vk/media";
+import { StorageMedia } from "@/components/vk/media";
 import { POSITIONS } from "@/lib/brand";
 import { usePlayers } from "@/lib/queries";
 
@@ -59,10 +59,12 @@ function Plantilla() {
                     className="group overflow-hidden rounded-xl border border-border bg-card shadow-card transition-shadow hover:shadow-lift"
                   >
                     <div className="relative">
-                      <StorageImage
+                      <StorageMedia
                         path={p.photo_url}
+                        type="image"
                         alt={p.full_name}
-                        className="aspect-[3/4] w-full"
+                        displayMode={p.photo_display_mode}
+                        className="aspect-[4/5] w-full"
                       />
                       {p.jersey_number != null && (
                         <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-0.5 font-display text-sm font-black text-primary-foreground">

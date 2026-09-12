@@ -25,6 +25,7 @@ import {
   usePlayers,
   type MatchEvent,
 } from "@/lib/queries";
+import type { DisplayMode } from "@/components/vk/media";
 
 const EVENT_TYPES: MatchEvent["event_type"][] = ["gol", "asistencia", "amarilla", "roja"];
 
@@ -47,6 +48,7 @@ export function ResultsPanel() {
   const [vkTitle, setVkTitle] = useState("");
   const [vkDesc, setVkDesc] = useState("");
   const [vkMedia, setVkMedia] = useState<string | null>(null);
+  const [vkDisplayMode, setVkDisplayMode] = useState<DisplayMode>("auto");
 
   const [evType, setEvType] = useState<MatchEvent["event_type"]>("gol");
   const [evPlayer, setEvPlayer] = useState("");
@@ -65,6 +67,7 @@ export function ResultsPanel() {
     setVkTitle(match.vikingada_title ?? "");
     setVkDesc(match.vikingada_description ?? "");
     setVkMedia(match.vikingada_media_url ?? null);
+    setVkDisplayMode(match.vikingada_display_mode ?? "auto");
   }, [matchId, match]);
 
   async function saveResult() {
@@ -87,6 +90,7 @@ export function ResultsPanel() {
         vikingada_title: vkTitle.trim() || null,
         vikingada_description: vkDesc.trim() || null,
         vikingada_media_url: vkMedia,
+        vikingada_display_mode: vkDisplayMode,
       })
       .eq("id", matchId);
     setBusy(false);
@@ -313,6 +317,9 @@ export function ResultsPanel() {
                 accept="image/*,video/*"
                 value={vkMedia}
                 onChange={(path) => setVkMedia(path)}
+                displayMode={vkDisplayMode}
+                onDisplayModeChange={setVkDisplayMode}
+                recommendedVertical
               />
             </div>
           </div>

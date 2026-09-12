@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { useMatches, useMediaLibrary } from "@/lib/queries";
+import type { DisplayMode } from "@/components/vk/media";
 
 const CATEGORIES = ["Partidos", "Entrenamientos", "Celebraciones", "Torneos", "Histórico"];
 
@@ -36,6 +37,7 @@ export function MediaPanel() {
   const [category, setCategory] = useState("");
   const [matchId, setMatchId] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("auto");
   const [busy, setBusy] = useState(false);
 
   async function save() {
@@ -49,6 +51,7 @@ export function MediaPanel() {
       category: category || null,
       match_id: matchId || null,
       featured,
+      display_mode: displayMode,
       uploaded_by: session?.user.id ?? null,
     });
     setBusy(false);
@@ -60,6 +63,7 @@ export function MediaPanel() {
     setCategory("");
     setMatchId("");
     setFeatured(false);
+    setDisplayMode("auto");
     qc.invalidateQueries({ queryKey: ["media"] });
   }
 
@@ -84,6 +88,8 @@ export function MediaPanel() {
         label="Foto o video"
         accept="image/*,video/*"
         value={url}
+        displayMode={displayMode}
+        onDisplayModeChange={setDisplayMode}
         onChange={(path, t) => {
           setUrl(path);
           if (t) setType(t);
@@ -142,7 +148,8 @@ export function MediaPanel() {
                 path={m.url}
                 type={m.media_type}
                 alt={m.title ?? "Multimedia"}
-                className="aspect-square w-full"
+                  displayMode={m.display_mode}
+                  className="aspect-square w-full bg-secondary"
               />
               <Button
                 size="icon"
