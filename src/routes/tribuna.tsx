@@ -7,7 +7,13 @@ import { toast } from "sonner";
 import { ImagePlus, Loader2, MessageCircle, Pencil, Send, Trash2 } from "lucide-react";
 
 import { AppShell, EmptyState, PageHeader } from "@/components/vk/shell";
-import { StorageImage, StorageMedia } from "@/components/vk/media";
+import {
+  DisplayModeSelector,
+  LocalMediaPreview,
+  MediaGallery,
+  StorageImage,
+  type DisplayMode,
+} from "@/components/vk/media";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -40,8 +46,18 @@ type PostRow = {
   content: string;
   media_url: string | null;
   media_type: string | null;
+  display_mode: DisplayMode;
   created_at: string;
   profiles: { username: string; display_name: string; avatar_url: string | null } | null;
+  post_media: PostMediaRow[];
+};
+
+type PostMediaRow = {
+  id: string;
+  url: string;
+  media_type: string;
+  display_mode: DisplayMode;
+  sort_order: number;
 };
 
 type CommentRow = {
@@ -62,7 +78,7 @@ function useFeed() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*, profiles:author_id (username, display_name, avatar_url)")
+        .select("*, profiles:author_id (username, display_name, avatar_url), post_media (*)")
         .order("created_at", { ascending: false })
         .limit(100);
       if (error) throw error;
@@ -75,30 +91,45 @@ function Composer() {
   const qc = useQueryClient();
   const { session } = useAuth();
   const [content, setContent] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("auto");
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function publish() {
-    if (!content.trim() && !file) return;
+    if (!content.trim() && files.length === 0) return;
+    const userId = session?.user.id;
+    if (!userId) return;
     setBusy(true);
     try {
-      let media_url: string | null = null;
-      let media_type: string | null = null;
-      if (file) {
-        const up = await uploadFile(file, "tribuna");
-        media_url = up.path;
-        media_type = up.type;
-      }
-      const { error } = await supabase.from("posts").insert({
-        author_id: session!.user.id,
+      const uploads = await Promise.all(files.map((file) => uploadFile(file, "tribuna")));
+      const first = uploads[0];
+      const { data: post, error } = await supabase.from("posts").insert({
+        author_id: userId,
         content: content.trim(),
-        media_url,
-        media_type,
-      });
+        media_url: first?.path ?? null,
+        media_type: first?.type ?? null,
+        display_mode: displayMode,
+      }).select("id").single();
       if (error) throw error;
+      if (post && uploads.length > 0) {
+        const { error: mediaError } = await supabase.from("post_media").insert(
+          uploads.map((item, sort_order) => ({
+            post_id: post.id,
+            url: item.path,
+            media_type: item.type,
+            display_mode: displayMode,
+            sort_order,
+          })),
+        );
+        if (mediaError) {
+          await supabase.from("posts").delete().eq("id", post.id);
+          throw mediaError;
+        }
+      }
       setContent("");
-      setFile(null);
+      setFiles([]);
+      setDisplayMode("auto");
       if (inputRef.current) inputRef.current.value = "";
       qc.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Publicado en La Tribuna");
@@ -118,7 +149,16 @@ function Composer() {
         rows={3}
         className="resize-none border-0 p-0 text-base shadow-none focus-visible:ring-0"
       />
-      {file && <p className="mt-2 truncate text-xs text-muted-foreground">{file.name}</p>}
+      {files.length > 0 && (
+        <div className="mt-3 space-y-3">
+          <div className="grid gap-2 sm:grid-cols-2">
+            {files.map((file) => (
+              <LocalMediaPreview key={`${file.name}-${file.lastModified}`} file={file} displayMode={displayMode} />
+            ))}
+          </div>
+          <DisplayModeSelector value={displayMode} onChange={setDisplayMode} />
+        </div>
+      )}
       <div className="mt-3 flex items-center justify-between gap-2">
         <Button
           type="button"
@@ -133,8 +173,9 @@ function Composer() {
           ref={inputRef}
           type="file"
           accept="image/*,video/*"
+          multiple
           className="hidden"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
         />
         <Button size="sm" onClick={publish} disabled={busy}>
           {busy ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}
@@ -275,7 +316,7 @@ function Comments({ postId }: { postId: string }) {
           size="icon"
           className="h-10 w-10 shrink-0"
           aria-label="Enviar comentario"
-          disabled={add.isPending || !text.trim()}
+          disabled={add.isPending || !text.trim() || !session}
         >
           {add.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -419,12 +460,26 @@ function PostCard({
           <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
         )
       )}
-      {post.media_url && (
-        <StorageMedia
-          path={post.media_url}
-          type={post.media_type}
-          alt="Contenido de la publicación"
-          className="mt-3 max-h-[26rem] w-full rounded-lg"
+      {(post.post_media.length > 0 || post.media_url) && (
+        <MediaGallery
+          className="mt-3"
+          items={
+            post.post_media.length > 0
+              ? [...post.post_media]
+                  .sort((a, b) => a.sort_order - b.sort_order)
+                  .map((item) => ({
+                    url: item.url,
+                    type: item.media_type,
+                    displayMode: item.display_mode,
+                    alt: "Contenido de la publicación",
+                  }))
+              : [{
+                  url: post.media_url as string,
+                  type: post.media_type,
+                  displayMode: post.display_mode,
+                  alt: "Contenido de la publicación",
+                }]
+          }
         />
       )}
 

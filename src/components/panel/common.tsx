@@ -143,16 +143,16 @@ export function MediaPicker({
 
   return (
     <Field label={label}>
+      {value && (
+        <StorageMedia
+          path={value}
+          type={value.match(/\.(mp4|mov|webm)$/i) ? "video" : "image"}
+          alt="Vista previa"
+          displayMode={displayMode}
+          className="mb-3 max-h-72 rounded-lg"
+        />
+      )}
       <div className="flex items-center gap-3">
-        {value && (
-          <StorageMedia
-            path={value}
-            type={value.match(/\.(mp4|mov|webm)$/i) ? "video" : "image"}
-            alt="Vista previa"
-            displayMode={displayMode}
-            className="max-h-72 rounded-lg"
-          />
-        )}
         <Button type="button" variant="outline" disabled={busy} onClick={() => ref.current?.click()}>
           {busy ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
