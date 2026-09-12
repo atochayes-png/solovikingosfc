@@ -149,7 +149,7 @@ export function MediaPanel() {
                 type={m.media_type}
                 alt={m.title ?? "Multimedia"}
                   displayMode={m.display_mode}
-                  className="aspect-square w-full"
+                  className="aspect-square w-full bg-secondary"
               />
               <Button
                 size="icon"

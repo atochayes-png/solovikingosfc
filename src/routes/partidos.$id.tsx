@@ -135,7 +135,7 @@ function FichaPartido() {
 
         {mvp && (
           <section className="overflow-hidden rounded-xl border border-accent/50 bg-card shadow-card">
-            <div className="flex items-stretch">
+            <div className="grid grid-cols-[7rem_minmax(0,1fr)] items-stretch">
               <StorageMedia
                 path={mvp.photo_url}
                 type="image"

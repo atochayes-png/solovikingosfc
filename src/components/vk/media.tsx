@@ -192,6 +192,26 @@ export function LocalMediaPreview({
   );
 }
 
+export function StoredMediaPreview({
+  path,
+  type,
+  displayMode,
+}: {
+  path: string;
+  type?: string | null;
+  displayMode: DisplayMode;
+}) {
+  return (
+    <StorageMedia
+      path={path}
+      type={type}
+      alt="Vista previa"
+      displayMode={displayMode}
+      className="max-h-72 rounded-lg"
+    />
+  );
+}
+
 export function MediaGallery({
   items,
   className,

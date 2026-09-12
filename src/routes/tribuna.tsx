@@ -460,12 +460,12 @@ function PostCard({
           <p className="mt-3 whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
         )
       )}
-      {(post.post_media.length > 0 || post.media_url) && (
+      {((post.post_media?.length ?? 0) > 0 || post.media_url) && (
         <MediaGallery
           className="mt-3"
           items={
-            post.post_media.length > 0
-              ? [...post.post_media]
+            (post.post_media?.length ?? 0) > 0
+              ? [...(post.post_media ?? [])]
                   .sort((a, b) => a.sort_order - b.sort_order)
                   .map((item) => ({
                     url: item.url,

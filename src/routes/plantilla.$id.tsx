@@ -51,13 +51,13 @@ function FichaJugador() {
 
   return (
     <AppShell>
-      <div className="relative">
+      <div className="relative bg-secondary">
         <StorageMedia
           path={player.photo_url}
           type="image"
           alt={player.full_name}
           displayMode={player.photo_display_mode}
-          className="max-h-[70vh] w-full"
+          className="max-h-[70vh] w-full rounded-none"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,oklch(0.18_0.06_262/0.92)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-5 pb-5 text-white">
