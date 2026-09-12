@@ -329,6 +329,8 @@ function Home() {
             <Link to="/tribuna">Entrar a La Tribuna</Link>
           </Button>
         </section>
+
+        <SponsorsSection className="pt-2" />
       </div>
     </AppShell>
   );
