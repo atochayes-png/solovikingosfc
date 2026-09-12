@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { StorageImage } from "@/components/vk/media";
 import { ConfirmButton, Field, MediaPicker, PanelCard } from "@/components/panel/common";
+import { PlayersImport } from "@/components/panel/players-import";
 import { supabase } from "@/integrations/supabase/client";
 import { POSITIONS } from "@/lib/brand";
 import { usePlayers, type Player } from "@/lib/queries";
@@ -110,6 +111,7 @@ export function PlayersPanel() {
 
   return (
     <PanelCard title="Jugadores">
+      <PlayersImport />
       <Dialog open={!!draft} onOpenChange={(v) => !v && setDraft(null)}>
         <DialogTrigger asChild>
           <Button onClick={() => setDraft({ ...empty })}>

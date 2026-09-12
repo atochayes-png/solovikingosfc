@@ -45,7 +45,7 @@ async function assertRole(
   }
 }
 
-async function createAccount(input: {
+export async function createAccount(input: {
   username: string;
   displayName: string;
   password: string;
