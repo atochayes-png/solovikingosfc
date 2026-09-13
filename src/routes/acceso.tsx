@@ -97,16 +97,28 @@ function Acceso() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              placeholder="Tu contraseña"
-              className="h-12 text-base"
-              required
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                placeholder="Tu contraseña"
+                className="h-12 pr-10 text-base"
+                required
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                className="absolute right-0 top-0 h-12 w-12 text-muted-foreground hover:text-foreground"
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
           <Button type="submit" className="h-12 w-full text-base" disabled={busy}>
             {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
