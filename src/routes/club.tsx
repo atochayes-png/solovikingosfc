@@ -38,9 +38,11 @@ function Club() {
 
   return (
     <AppShell>
+      <ManagedSiteImage imageKey="club_team" title="Foto oficial del equipo">
       <section className="relative">
-        <img
-          src={BRAND.team}
+        <SiteImage
+          imageKey="club_team"
+          fallbackSrc={BRAND.team}
           alt="Plantel de Vikingos FC"
           className="h-60 w-full object-cover object-top sm:h-80"
         />
