@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { AppShell, Crest, PageHeader } from "@/components/vk/shell";
+import { ManagedSiteImage, SiteImage, SiteImageEditor } from "@/components/vk/site-image";
+import { useAuth } from "@/lib/auth";
 import { BRAND } from "@/lib/brand";
 import { useClub } from "@/lib/queries";
 
@@ -35,6 +37,7 @@ function Section({ title, body }: { title: string; body?: string | null | undefi
 
 function Club() {
   const { data: club } = useClub();
+  const { isStaff } = useAuth();
 
   return (
     <AppShell>
