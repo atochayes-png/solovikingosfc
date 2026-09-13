@@ -7,6 +7,7 @@ import { ArrowRight, CalendarDays, MapPin, Trophy } from "lucide-react";
 import { AppShell, Crest, EmptyState } from "@/components/vk/shell";
 import { MediaGallery, StorageImage, StorageMedia } from "@/components/vk/media";
 import { SponsorsSection } from "@/components/vk/sponsors";
+import { ManagedSiteImage, SiteImage } from "@/components/vk/site-image";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/brand";
 import {
@@ -182,7 +183,12 @@ function Home() {
 
   return (
     <AppShell>
-      {today ? <MatchdayHero match={today} /> : <DefaultHero />}
+      <ManagedSiteImage
+        imageKey={today ? "club_pitch" : "hero"}
+        title={today ? "Fotografía de la cancha (Matchday)" : "Imagen principal de Inicio"}
+      >
+        {today ? <MatchdayHero match={today} /> : <DefaultHero />}
+      </ManagedSiteImage>
 
       <div className="space-y-8 px-4 py-8 sm:px-6">
         {!hasAnything && (
