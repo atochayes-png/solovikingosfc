@@ -57,8 +57,20 @@ function Club() {
           </div>
         </div>
       </section>
+      </ManagedSiteImage>
 
       <div className="space-y-4 px-4 py-6 sm:px-6">
+        {isStaff && (
+          <section className="rounded-xl border border-dashed border-border bg-card/60 p-4">
+            <p className="eyebrow text-muted-foreground">Imágenes del club</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <SiteImageEditor imageKey="club_logo" title="Logotipo oficial" variant="outline" label="Cambiar logotipo" />
+              <SiteImageEditor imageKey="club_team" title="Foto oficial del equipo" variant="outline" label="Cambiar fotografía del equipo" />
+              <SiteImageEditor imageKey="club_kit" title="Uniforme actual" variant="outline" label="Cambiar uniforme" />
+              <SiteImageEditor imageKey="club_pitch" title="Fotografía de la cancha" variant="outline" label="Cambiar cancha" />
+            </div>
+          </section>
+        )}
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl bg-secondary p-4">
             <p className="eyebrow text-muted-foreground">Liga</p>
@@ -77,22 +89,28 @@ function Club() {
 
         <PageHeader eyebrow="Identidad visual" title="Colores y uniforme" />
         <div className="grid gap-3 sm:grid-cols-2">
-          <figure className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
-            <img
-              src={BRAND.kit}
-              alt="Uniforme oficial de Vikingos FC"
-              className="aspect-[4/3] w-full object-cover"
-            />
-            <figcaption className="p-3 text-sm font-semibold">Uniforme de juego</figcaption>
-          </figure>
-          <figure className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
-            <img
-              src={BRAND.pitch}
-              alt="Cancha donde juega Vikingos FC"
-              className="aspect-[4/3] w-full object-cover"
-            />
-            <figcaption className="p-3 text-sm font-semibold">Nuestra cancha</figcaption>
-          </figure>
+          <ManagedSiteImage imageKey="club_kit" title="Uniforme actual">
+            <figure className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+              <SiteImage
+                imageKey="club_kit"
+                fallbackSrc={BRAND.kit}
+                alt="Uniforme oficial de Vikingos FC"
+                className="aspect-[4/3] w-full bg-secondary object-contain"
+              />
+              <figcaption className="p-3 text-sm font-semibold">Uniforme de juego</figcaption>
+            </figure>
+          </ManagedSiteImage>
+          <ManagedSiteImage imageKey="club_pitch" title="Fotografía de la cancha">
+            <figure className="overflow-hidden rounded-xl border border-border bg-card shadow-card">
+              <SiteImage
+                imageKey="club_pitch"
+                fallbackSrc={BRAND.pitch}
+                alt="Cancha donde juega Vikingos FC"
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <figcaption className="p-3 text-sm font-semibold">Nuestra cancha</figcaption>
+            </figure>
+          </ManagedSiteImage>
         </div>
       </div>
     </AppShell>
