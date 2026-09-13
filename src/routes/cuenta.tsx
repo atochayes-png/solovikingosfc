@@ -27,6 +27,8 @@ function Cuenta() {
   const { profile, role, session } = useAuth();
   const [pass, setPass] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent) {
