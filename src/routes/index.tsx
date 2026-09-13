@@ -7,6 +7,7 @@ import { ArrowRight, CalendarDays, MapPin, Trophy } from "lucide-react";
 import { AppShell, Crest, EmptyState } from "@/components/vk/shell";
 import { MediaGallery, StorageImage, StorageMedia } from "@/components/vk/media";
 import { SponsorsSection } from "@/components/vk/sponsors";
+import { ManagedSiteImage, SiteImage } from "@/components/vk/site-image";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@/lib/brand";
 import {
@@ -56,8 +57,9 @@ function MatchdayHero({ match }: { match: Match }) {
   const cd = useCountdown(match.kickoff);
   return (
     <section className="relative overflow-hidden">
-      <img
-        src={BRAND.pitch}
+      <SiteImage
+        imageKey="club_pitch"
+        fallbackSrc={BRAND.pitch}
         alt="Cancha de Vikingos FC en noche de partido"
         className="absolute inset-0 h-full w-full object-cover"
       />
@@ -122,8 +124,9 @@ function MatchdayHero({ match }: { match: Match }) {
 function DefaultHero() {
   return (
     <section className="relative overflow-hidden">
-      <img
-        src={BRAND.team}
+      <SiteImage
+        imageKey="hero"
+        fallbackSrc={BRAND.team}
         alt="Plantel de Vikingos FC en la cancha"
         className="h-[62vh] max-h-[520px] w-full object-cover object-top sm:h-[70vh]"
       />
@@ -180,7 +183,12 @@ function Home() {
 
   return (
     <AppShell>
-      {today ? <MatchdayHero match={today} /> : <DefaultHero />}
+      <ManagedSiteImage
+        imageKey={today ? "club_pitch" : "hero"}
+        title={today ? "Fotografía de la cancha (Matchday)" : "Imagen principal de Inicio"}
+      >
+        {today ? <MatchdayHero match={today} /> : <DefaultHero />}
+      </ManagedSiteImage>
 
       <div className="space-y-8 px-4 py-8 sm:px-6">
         {!hasAnything && (
