@@ -64,6 +64,7 @@ function Panel() {
             <TabsTrigger value="partidos">Partidos</TabsTrigger>
             <TabsTrigger value="resultados">Resultados</TabsTrigger>
             <TabsTrigger value="vikingoteca">Vikingoteca</TabsTrigger>
+            <TabsTrigger value="multimedia">Multimedia</TabsTrigger>
             <TabsTrigger value="club">El Club</TabsTrigger>
             <TabsTrigger value="cuentas">Cuentas</TabsTrigger>
             {isMaster && <TabsTrigger value="patrocinadores">Patrocinadores</TabsTrigger>}
