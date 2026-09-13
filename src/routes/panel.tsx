@@ -7,6 +7,7 @@ import { PlayersPanel } from "@/components/panel/players-panel";
 import { MatchesPanel } from "@/components/panel/matches-panel";
 import { ResultsPanel } from "@/components/panel/results-panel";
 import { MediaPanel } from "@/components/panel/media-panel";
+import { InstitutionalPanel } from "@/components/panel/institutional-panel";
 import { ClubPanel } from "@/components/panel/club-panel";
 import { UsersPanel } from "@/components/panel/users-panel";
 import { SponsorsPanel } from "@/components/panel/sponsors-panel";
@@ -81,6 +82,9 @@ function Panel() {
           </TabsContent>
           <TabsContent value="vikingoteca" className="mt-4">
             <MediaPanel />
+          </TabsContent>
+          <TabsContent value="multimedia" className="mt-4 space-y-4">
+            <InstitutionalPanel />
           </TabsContent>
           <TabsContent value="club" className="mt-4 space-y-4">
             <ClubPanel />
