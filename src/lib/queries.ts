@@ -184,6 +184,31 @@ export function useMediaLibrary() {
   });
 }
 
+export type SiteImageKey = "hero" | "club_logo" | "club_team" | "club_kit" | "club_pitch";
+
+export type SiteImage = {
+  key: SiteImageKey;
+  path: string;
+  display_mode: DisplayMode;
+  updated_at: string;
+};
+
+export function useSiteImages() {
+  return useQuery({
+    queryKey: ["site_images"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_images")
+        .select("key,path,display_mode,updated_at");
+      if (error) throw error;
+      const map: Partial<Record<SiteImageKey, SiteImage>> = {};
+      for (const row of (data ?? []) as SiteImage[]) map[row.key] = row;
+      return map;
+    },
+    staleTime: 60_000,
+  });
+}
+
 export type Sponsor = {
   id: string;
   name: string;
