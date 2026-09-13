@@ -17,6 +17,7 @@ import { BRAND } from "@/lib/brand";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { SiteImage } from "@/components/vk/site-image";
 import { Button } from "@/components/ui/button";
 
 const NAV = [
@@ -33,8 +34,9 @@ const MOBILE_NAV = [NAV[0], NAV[1], NAV[2], NAV[3], NAV[5]] as const;
 
 export function Crest({ className }: { className?: string }) {
   return (
-    <img
-      src={BRAND.crest}
+    <SiteImage
+      imageKey="club_logo"
+      fallbackSrc={BRAND.crest}
       alt="Escudo oficial de Vikingos FC"
       className={cn("object-contain", className)}
     />
