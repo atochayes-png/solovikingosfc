@@ -15,6 +15,7 @@ import {
 import { type ReactNode, useState } from "react";
 import { BRAND } from "@/lib/brand";
 import { useAuth } from "@/lib/auth";
+import { NotificationBell } from "@/components/vk/notifications";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SiteImage } from "@/components/vk/site-image";
@@ -94,6 +95,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </Link>
               </Button>
             )}
+            {profile && <NotificationBell />}
             {profile ? (
               <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>

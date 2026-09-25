@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
@@ -396,7 +396,10 @@ function PostCard({
 
 
   return (
-    <article className="rounded-xl border border-border bg-card p-4 shadow-card">
+    <article
+      id={`post-${post.id}`}
+      className="scroll-mt-24 rounded-xl border border-border bg-card p-4 shadow-card target:ring-2 target:ring-accent"
+    >
       <header className="flex items-center gap-3">
         <StorageImage
           path={post.profiles?.avatar_url}
@@ -523,6 +526,13 @@ function PostCard({
 function Tribuna() {
   const { session, loading } = useAuth();
   const { data: posts = [], isLoading } = useFeed();
+  useEffect(() => {
+    if (isLoading || posts.length === 0) return;
+    const h = window.location.hash.slice(1);
+    if (!h.startsWith("post-")) return;
+    const el = document.getElementById(h);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [isLoading, posts.length]);
   const { data: reactions = [] } = useQuery({
     queryKey: ["reactions"],
     queryFn: async () => {
