@@ -59,7 +59,10 @@ export function AttendanceCard({ matchId }: { matchId: string }) {
       ? await supabase.from("match_attendance").delete().eq("match_id", matchId).eq("player_id", m.playerId)
       : await supabase.from("match_attendance").insert({ match_id: matchId, player_id: m.playerId });
     setBusy(false);
-    if (error) return toast.error("No se pudo guardar tu asistencia. Intenta de nuevo.");
+    if (error) {
+      toast.error("No se pudo guardar tu asistencia. Intenta de nuevo.");
+      return;
+    }
     toast.success(m.confirmed ? "Confirmación retirada" : "¡Asistencia confirmada!");
     refresh();
   };
