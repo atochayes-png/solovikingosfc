@@ -15,6 +15,13 @@
       "when": 1790378043635,
       "tag": "0001_post_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790380014489,
+      "tag": "0002_standings",
+      "breakpoints": true
     }
   ]
 }
