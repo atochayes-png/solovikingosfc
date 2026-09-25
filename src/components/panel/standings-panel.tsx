@@ -20,9 +20,9 @@ function TeamRow({ team, onSaved }: { team: StandingTeam; onSaved: () => void })
   useEffect(() => setF(team), [team]);
 
   async function save() {
-    if (!f.name.trim()) return toast.error("El nombre no puede quedar vacío");
+    if (!f.name.trim()) { toast.error("El nombre no puede quedar vacío"); return; }
     if (NUMS.some((k) => !Number.isInteger(f[k]) || (k !== "pts" && f[k] < 0)))
-      return toast.error("Revisa los números: deben ser enteros");
+      { toast.error("Revisa los números: deben ser enteros"); return; }
     setBusy(true);
     if (f.is_vikingos && !team.is_vikingos) {
       await supabase.from("standings_teams").update({ is_vikingos: false }).neq("id", team.id).eq("is_vikingos", true);
@@ -30,14 +30,14 @@ function TeamRow({ team, onSaved }: { team: StandingTeam; onSaved: () => void })
     const { id: _id, created_at: _c, updated_at: _u, ...rest } = f;
     const { error } = await supabase.from("standings_teams").update({ ...rest, name: f.name.trim() }).eq("id", team.id);
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`${f.name} guardado`);
     onSaved();
   }
 
   async function remove() {
     const { error } = await supabase.from("standings_teams").delete().eq("id", team.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Equipo eliminado");
     onSaved();
   }
@@ -95,29 +95,29 @@ export function StandingsPanel() {
   const refresh = () => qc.invalidateQueries({ queryKey: ["standings"] });
 
   async function add() {
-    if (!name.trim()) return toast.error("Escribe el nombre del equipo");
+    if (!name.trim()) { toast.error("Escribe el nombre del equipo"); return; }
     setAdding(true);
     const { error } = await supabase.from("standings_teams").insert({ name: name.trim() });
     setAdding(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setName("");
     toast.success("Equipo registrado");
     refresh();
   }
 
   async function saveCfg() {
-    if (!Number.isInteger(ppw) || ppw < 0) return toast.error("Puntos por victoria inválidos");
+    if (!Number.isInteger(ppw) || ppw < 0) { toast.error("Puntos por victoria inválidos"); return; }
     setSavingCfg(true);
     const { error } = await supabase.from("standings_settings").upsert({ id: true, points_per_win: ppw, tiebreakers: tb });
     setSavingCfg(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Reglas de la tabla guardadas");
     refresh();
   }
 
   const move = (i: number, d: number) => {
     const n = [...tb];
-    [n[i], n[i + d]] = [n[i + d], n[i]];
+    const a = n[i]!; n[i] = n[i + d]!; n[i + d] = a;
     setTb(n);
   };
 
