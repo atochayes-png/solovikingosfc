@@ -103,11 +103,11 @@ export function PlayersImport() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={() => downloadTemplate()}>
+      <div className="grid gap-2 sm:flex sm:flex-wrap">
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => downloadTemplate()}>
           <Download className="mr-2 h-4 w-4" /> Descargar plantilla Excel
         </Button>
-        <Button variant="outline" onClick={() => fileRef.current?.click()} disabled={reading}>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => fileRef.current?.click()} disabled={reading}>
           {reading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -210,11 +210,11 @@ export function PlayersImport() {
               <p className="font-semibold">
                 Se crearán {ok.length} jugadores y {ok.length} accesos Vikingos.
               </p>
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setConfirming(false)} disabled={busy}>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Button className="w-full" variant="outline" onClick={() => setConfirming(false)} disabled={busy}>
                   Cancelar
                 </Button>
-                <Button onClick={confirmImport} disabled={busy}>
+                <Button className="w-full" onClick={confirmImport} disabled={busy}>
                   {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Confirmar importación
                 </Button>

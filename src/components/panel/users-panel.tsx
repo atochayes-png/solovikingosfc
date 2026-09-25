@@ -212,7 +212,7 @@ export function UsersPanel() {
       <PanelCard title="Cuentas del club">
         <ul className="divide-y divide-border rounded-lg border border-border">
           {accounts.map((a) => (
-            <li key={a.id} className="flex flex-wrap items-center gap-3 p-3">
+            <li key={a.id} className="grid grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-2 p-3 sm:gap-3">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold">{a.display_name}</p>
                 <p className="text-xs text-muted-foreground">
@@ -250,13 +250,13 @@ export function UsersPanel() {
                 </>
               )}
               {resetFor === a.id && (
-                <div className="flex w-full gap-2">
+                <div className="col-span-full grid w-full gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
                   <Input
                     placeholder="Nueva contraseña"
                     value={resetPass}
                     onChange={(e) => setResetPass(e.target.value)}
                   />
-                  <Button onClick={doReset} disabled={resetting}>
+                  <Button className="w-full sm:w-auto" onClick={doReset} disabled={resetting}>
                     {resetting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Guardar
                   </Button>

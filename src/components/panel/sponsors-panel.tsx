@@ -154,11 +154,11 @@ export function SponsorsPanel() {
             <span className="text-sm">{draft.is_active ? "Activo" : "Inactivo"}</span>
           </div>
 
-          <div className="flex gap-2">
-            <Button onClick={save} disabled={busy}>
+          <div className="grid gap-2 min-[360px]:grid-cols-2 sm:flex">
+            <Button className="w-full sm:w-auto" onClick={save} disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Guardar
             </Button>
-            <Button variant="ghost" onClick={() => setDraft(null)} disabled={busy}>
+            <Button className="w-full sm:w-auto" variant="ghost" onClick={() => setDraft(null)} disabled={busy}>
               Cancelar
             </Button>
           </div>
@@ -176,7 +176,7 @@ export function SponsorsPanel() {
           {sponsors.map((s) => (
             <article
               key={s.id}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+              className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-xl border border-border bg-card p-3 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
             >
               <StorageImage
                 path={s.logo_url}
@@ -190,7 +190,7 @@ export function SponsorsPanel() {
                   Orden {s.display_order} · {s.is_active ? "Activo" : "Inactivo"}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-1">
+              <div className="col-span-full flex items-center justify-end gap-1 sm:col-span-1">
                 <Switch
                   checked={s.is_active}
                   onCheckedChange={() => toggle(s)}

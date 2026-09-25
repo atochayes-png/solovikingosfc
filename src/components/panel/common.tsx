@@ -96,7 +96,7 @@ export function Field({
 
 export function PanelCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-xl border border-border bg-card p-5 shadow-card">
+    <section className="rounded-xl border border-border bg-card p-4 shadow-card sm:p-5">
       <h2 className="font-display text-lg font-extrabold">{title}</h2>
       <div className="mt-4 space-y-4">{children}</div>
     </section>
@@ -152,8 +152,8 @@ export function MediaPicker({
           className="mb-3 max-h-72 rounded-lg"
         />
       )}
-      <div className="flex items-center gap-3">
-        <Button type="button" variant="outline" disabled={busy} onClick={() => ref.current?.click()}>
+      <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:items-center sm:gap-3">
+        <Button className="w-full sm:w-auto" type="button" variant="outline" disabled={busy} onClick={() => ref.current?.click()}>
           {busy ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -162,7 +162,7 @@ export function MediaPicker({
           {value ? "Reemplazar" : "Subir"}
         </Button>
         {value && (
-          <Button type="button" variant="ghost" onClick={() => onChange(null)}>
+          <Button className="w-full sm:w-auto" type="button" variant="ghost" onClick={() => onChange(null)}>
             Quitar
           </Button>
         )}
