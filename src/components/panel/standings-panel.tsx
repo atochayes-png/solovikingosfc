@@ -65,8 +65,8 @@ function TeamRow({ team, onSaved }: { team: StandingTeam; onSaved: () => void })
           Es VIKINGOS FC
         </label>
         <div className="flex gap-2">
-          <ConfirmButton title={`¿Eliminar ${team.name}?`} onConfirm={remove} variant="outline" size="icon" aria-label="Eliminar">
-            <Trash2 className="h-4 w-4" />
+          <ConfirmButton title={`¿Eliminar ${team.name}?`} onConfirm={remove}>
+            <Button variant="outline" size="icon" aria-label="Eliminar"><Trash2 className="h-4 w-4" /></Button>
           </ConfirmButton>
           <Button onClick={save} disabled={busy}>
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Guardar

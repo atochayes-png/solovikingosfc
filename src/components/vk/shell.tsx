@@ -5,6 +5,7 @@ import {
   CalendarDays,
   Users,
   BarChart3,
+  ListOrdered,
   Images,
   Shield,
   LogIn,
@@ -26,12 +27,13 @@ const NAV = [
   { to: "/tribuna", label: "Tribuna", icon: MessagesSquare },
   { to: "/partidos", label: "Partidos", icon: CalendarDays },
   { to: "/plantilla", label: "Plantilla", icon: Users },
+  { to: "/tabla", label: "Tabla", icon: ListOrdered },
   { to: "/estadisticas", label: "Estadísticas", icon: BarChart3 },
   { to: "/vikingoteca", label: "Vikingoteca", icon: Images },
   { to: "/club", label: "El Club", icon: Shield },
 ] as const;
 
-const MOBILE_NAV = [NAV[0], NAV[1], NAV[2], NAV[3], NAV[5]] as const;
+const MOBILE_NAV = [NAV[0], NAV[1], NAV[2], NAV[3], NAV[4]] as const;
 
 export function Crest({ className }: { className?: string }) {
   return (

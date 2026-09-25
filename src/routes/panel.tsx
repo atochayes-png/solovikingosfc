@@ -10,6 +10,7 @@ import { MediaPanel } from "@/components/panel/media-panel";
 import { InstitutionalPanel } from "@/components/panel/institutional-panel";
 import { ClubPanel } from "@/components/panel/club-panel";
 import { UsersPanel } from "@/components/panel/users-panel";
+import { StandingsPanel } from "@/components/panel/standings-panel";
 import { SponsorsPanel } from "@/components/panel/sponsors-panel";
 import { useAuth } from "@/lib/auth";
 
@@ -64,6 +65,7 @@ function Panel() {
             <TabsTrigger className="h-9 shrink-0 px-4" value="jugadores">Jugadores</TabsTrigger>
             <TabsTrigger className="h-9 shrink-0 px-4" value="partidos">Partidos</TabsTrigger>
             <TabsTrigger className="h-9 shrink-0 px-4" value="resultados">Resultados</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="tabla">Tabla</TabsTrigger>
             <TabsTrigger className="h-9 shrink-0 px-4" value="vikingoteca">Vikingoteca</TabsTrigger>
             <TabsTrigger className="h-9 shrink-0 px-4" value="multimedia">Multimedia</TabsTrigger>
             <TabsTrigger className="h-9 shrink-0 px-4" value="club">El Club</TabsTrigger>
@@ -79,6 +81,9 @@ function Panel() {
           </TabsContent>
           <TabsContent value="resultados" className="mt-4">
             <ResultsPanel />
+          </TabsContent>
+          <TabsContent value="tabla" className="mt-4">
+            <StandingsPanel />
           </TabsContent>
           <TabsContent value="vikingoteca" className="mt-4">
             <MediaPanel />
