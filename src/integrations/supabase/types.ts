@@ -758,6 +758,75 @@ export type Database = {
         }
         Relationships: []
       }
+      standings_settings: {
+        Row: {
+          id: boolean
+          points_per_win: number
+          tiebreakers: string[]
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          points_per_win?: number
+          tiebreakers?: string[]
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          points_per_win?: number
+          tiebreakers?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      standings_teams: {
+        Row: {
+          created_at: string
+          e: number
+          g: number
+          gc: number
+          gf: number
+          id: string
+          is_vikingos: boolean
+          manual_order: number
+          name: string
+          p: number
+          pj: number
+          pts: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          e?: number
+          g?: number
+          gc?: number
+          gf?: number
+          id?: string
+          is_vikingos?: boolean
+          manual_order?: number
+          name: string
+          p?: number
+          pj?: number
+          pts?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          e?: number
+          g?: number
+          gc?: number
+          gf?: number
+          id?: string
+          is_vikingos?: boolean
+          manual_order?: number
+          name?: string
+          p?: number
+          pj?: number
+          pts?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
