@@ -526,6 +526,13 @@ function PostCard({
 function Tribuna() {
   const { session, loading } = useAuth();
   const { data: posts = [], isLoading } = useFeed();
+  useEffect(() => {
+    if (isLoading || posts.length === 0) return;
+    const h = window.location.hash.slice(1);
+    if (!h.startsWith("post-")) return;
+    const el = document.getElementById(h);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [isLoading, posts.length]);
   const { data: reactions = [] } = useQuery({
     queryKey: ["reactions"],
     queryFn: async () => {
