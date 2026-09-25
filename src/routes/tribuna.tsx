@@ -396,7 +396,10 @@ function PostCard({
 
 
   return (
-    <article className="rounded-xl border border-border bg-card p-4 shadow-card">
+    <article
+      id={`post-${post.id}`}
+      className="scroll-mt-24 rounded-xl border border-border bg-card p-4 shadow-card target:ring-2 target:ring-accent"
+    >
       <header className="flex items-center gap-3">
         <StorageImage
           path={post.profiles?.avatar_url}
