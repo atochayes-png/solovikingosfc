@@ -116,7 +116,7 @@ export function ClubPanel() {
       </PanelCard>
 
       <PanelCard title="Temporadas">
-        <div className="flex gap-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
           <Input
             placeholder="Ej. Temporada 2026"
             value={newSeason}
@@ -138,8 +138,8 @@ export function ClubPanel() {
         ) : (
           <ul className="divide-y divide-border rounded-lg border border-border">
             {seasons.map((s) => (
-              <li key={s.id} className="flex items-center gap-3 p-3 text-sm">
-                <span className="flex-1 font-semibold">{s.name}</span>
+              <li key={s.id} className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 p-3 text-sm sm:gap-3">
+                <span className="min-w-0 truncate font-semibold">{s.name}</span>
                 {s.is_current ? (
                   <span className="eyebrow text-accent-foreground">Actual</span>
                 ) : (

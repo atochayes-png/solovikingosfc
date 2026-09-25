@@ -60,15 +60,15 @@ function Panel() {
       />
       <div className="px-4 pb-8 sm:px-6">
         <Tabs defaultValue="jugadores">
-          <TabsList className="flex w-full flex-wrap justify-start gap-1">
-            <TabsTrigger value="jugadores">Jugadores</TabsTrigger>
-            <TabsTrigger value="partidos">Partidos</TabsTrigger>
-            <TabsTrigger value="resultados">Resultados</TabsTrigger>
-            <TabsTrigger value="vikingoteca">Vikingoteca</TabsTrigger>
-            <TabsTrigger value="multimedia">Multimedia</TabsTrigger>
-            <TabsTrigger value="club">El Club</TabsTrigger>
-            <TabsTrigger value="cuentas">Cuentas</TabsTrigger>
-            {isMaster && <TabsTrigger value="patrocinadores">Patrocinadores</TabsTrigger>}
+          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto overscroll-x-contain p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <TabsTrigger className="h-9 shrink-0 px-4" value="jugadores">Jugadores</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="partidos">Partidos</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="resultados">Resultados</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="vikingoteca">Vikingoteca</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="multimedia">Multimedia</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="club">El Club</TabsTrigger>
+            <TabsTrigger className="h-9 shrink-0 px-4" value="cuentas">Cuentas</TabsTrigger>
+            {isMaster && <TabsTrigger className="h-9 shrink-0 px-4" value="patrocinadores">Patrocinadores</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="jugadores" className="mt-4">
