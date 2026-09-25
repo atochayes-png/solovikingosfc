@@ -102,6 +102,49 @@ export type Database = {
           },
         ]
       }
+      match_attendance: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          player_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          player_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          player_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_attendance_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_attendance_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "player_stats"
+            referencedColumns: ["player_id"]
+          },
+          {
+            foreignKeyName: "match_attendance_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       match_events: {
         Row: {
           created_at: string
@@ -720,6 +763,13 @@ export type Database = {
       }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      match_attendance_stats: {
+        Args: { _match_id: string }
+        Returns: {
+          confirmed: number
+          total: number
+        }[]
+      }
     }
     Enums: {
       app_role: "master" | "admin" | "vikingo"
