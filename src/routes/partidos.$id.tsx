@@ -5,6 +5,7 @@ import { CalendarDays, MapPin, Trophy, Laugh } from "lucide-react";
 
 import { AppShell, EmptyState, PageHeader } from "@/components/vk/shell";
 import { MediaGallery, StorageMedia } from "@/components/vk/media";
+import { AttendanceCard } from "@/components/vk/attendance";
 import { Badge } from "@/components/ui/badge";
 import { useMatch, useMatchEvents, useMediaLibrary, usePlayers } from "@/lib/queries";
 
@@ -112,6 +113,10 @@ function FichaPartido() {
             <p className="mt-2 whitespace-pre-line text-sm leading-relaxed">{match.preview}</p>
           </article>
         )}
+
+        {match.status === "programado" &&
+          match.kickoff &&
+          new Date(match.kickoff) > new Date() && <AttendanceCard matchId={match.id} />}
 
         {grouped.length > 0 && (
           <section className="grid gap-3 sm:grid-cols-2">
