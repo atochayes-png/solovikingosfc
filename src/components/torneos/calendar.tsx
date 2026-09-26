@@ -68,7 +68,7 @@ const splitLocal = (iso: string) => {
 function MatchCard({
   m, round, names, venue, manager, teams, tid, showRound,
 }: {
-  m: Match; round?: Round; names: Map<string, string>; venue: string | null; manager: boolean;
+  m: Match; round?: Round | undefined; names: Map<string, string>; venue: string | null; manager: boolean;
   teams: { id: string; name: string }[]; tid: string; showRound?: boolean;
 }) {
   const qc = useQueryClient();
