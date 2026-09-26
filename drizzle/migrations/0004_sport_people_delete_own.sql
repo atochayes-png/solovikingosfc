@@ -1,0 +1,1 @@
+CREATE POLICY "sp delete" ON public.sport_people FOR DELETE TO authenticated USING (created_by = auth.uid() OR public.is_master(auth.uid()));

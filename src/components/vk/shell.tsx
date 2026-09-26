@@ -133,6 +133,13 @@ export function AppShell({ children }: { children: ReactNode }) {
                         Panel Master · Gestión Deportiva
                       </Link>
                     )}
+                    <Link
+                      to="/torneos"
+                      onClick={() => setOpen(false)}
+                      className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-secondary"
+                    >
+                      Mis torneos
+                    </Link>
                     {panelLink && (
                       <Link
                         to={panelLink}

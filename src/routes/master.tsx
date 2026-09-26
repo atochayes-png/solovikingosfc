@@ -16,6 +16,9 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Crest } from "@/components/vk/shell";
+import { TournamentFormDialog } from "@/components/torneos/tournament-form";
+import { TournamentCard } from "@/components/torneos/tournament-card";
+import { useTournaments } from "@/lib/tournaments";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -183,7 +186,7 @@ function Resumen({ onGo }: { onGo: (s: Section) => void }) {
       </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <QuickLink icon={Network} title="Redes sociales" hint="Administra tus comunidades deportivas" onClick={() => onGo("redes")} />
-        <QuickLink icon={Trophy} title="Torneos" hint="Próximamente" onClick={() => onGo("torneos")} />
+        <QuickLink icon={Trophy} title="Torneos" hint="Crea y administra torneos de fútbol" onClick={() => onGo("torneos")} />
       </div>
     </>
   );
@@ -238,14 +241,29 @@ function Redes() {
 }
 
 function Torneos() {
+  const { data = [], isLoading } = useTournaments();
   return (
     <>
-      <Title eyebrow="Competencias" title="Torneos" action={<Soon label="Crear torneo" />} />
-      <div className="rounded-2xl border border-dashed border-border bg-card/60 px-6 py-16 text-center">
-        <Trophy className="mx-auto h-12 w-12 text-muted-foreground/50" />
-        <p className="mt-4 font-display text-lg font-bold">Aún no hay torneos registrados.</p>
-        <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">Esta sección se habilitará en una próxima etapa.</p>
-      </div>
+      <Title
+        eyebrow="Competencias · Fútbol"
+        title="Torneos"
+        action={
+          <TournamentFormDialog>
+            <Button><Plus className="mr-1 h-4 w-4" /> Crear torneo</Button>
+          </TournamentFormDialog>
+        }
+      />
+      {isLoading ? null : data.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border bg-card/60 px-6 py-16 text-center">
+          <Trophy className="mx-auto h-12 w-12 text-muted-foreground/50" />
+          <p className="mt-4 font-display text-lg font-bold">Aún no hay torneos registrados.</p>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">Crea el primero con «Crear torneo».</p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {data.map((t) => <TournamentCard key={t.id} t={t} />)}
+        </div>
+      )}
     </>
   );
 }

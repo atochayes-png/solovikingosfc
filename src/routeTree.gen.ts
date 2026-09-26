@@ -23,6 +23,7 @@ import { Route as PartidosIndexRouteImport } from './routes/partidos.index'
 import { Route as PartidosIdRouteImport } from './routes/partidos.$id'
 import { Route as PlantillaIndexRouteImport } from './routes/plantilla.index'
 import { Route as PlantillaIdRouteImport } from './routes/plantilla.$id'
+import { Route as TorneosIdRouteImport } from './routes/torneos.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +95,11 @@ const PlantillaIdRoute = PlantillaIdRouteImport.update({
   path: '/plantilla/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TorneosIdRoute = TorneosIdRouteImport.update({
+  id: '/torneos/$id',
+  path: '/torneos/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
   '/plantilla/$id': typeof PlantillaIdRoute
+  '/torneos/$id': typeof TorneosIdRoute
   '/partidos/': typeof PartidosIndexRoute
   '/plantilla/': typeof PlantillaIndexRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
   '/plantilla/$id': typeof PlantillaIdRoute
+  '/torneos/$id': typeof TorneosIdRoute
   '/partidos': typeof PartidosIndexRoute
   '/plantilla': typeof PlantillaIndexRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
   '/plantilla/$id': typeof PlantillaIdRoute
+  '/torneos/$id': typeof TorneosIdRoute
   '/partidos/': typeof PartidosIndexRoute
   '/plantilla/': typeof PlantillaIndexRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/vikingoteca'
     | '/partidos/$id'
     | '/plantilla/$id'
+    | '/torneos/$id'
     | '/partidos/'
     | '/plantilla/'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/vikingoteca'
     | '/partidos/$id'
     | '/plantilla/$id'
+    | '/torneos/$id'
     | '/partidos'
     | '/plantilla'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/vikingoteca'
     | '/partidos/$id'
     | '/plantilla/$id'
+    | '/torneos/$id'
     | '/partidos/'
     | '/plantilla/'
   fileRoutesById: FileRoutesById
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   VikingotecaRoute: typeof VikingotecaRoute
   PartidosIdRoute: typeof PartidosIdRoute
   PlantillaIdRoute: typeof PlantillaIdRoute
+  TorneosIdRoute: typeof TorneosIdRoute
   PartidosIndexRoute: typeof PartidosIndexRoute
   PlantillaIndexRoute: typeof PlantillaIndexRoute
 }
@@ -312,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlantillaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/torneos/$id': {
+      id: '/torneos/$id'
+      path: '/torneos/$id'
+      fullPath: '/torneos/$id'
+      preLoaderRoute: typeof TorneosIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   VikingotecaRoute: VikingotecaRoute,
   PartidosIdRoute: PartidosIdRoute,
   PlantillaIdRoute: PlantillaIdRoute,
+  TorneosIdRoute: TorneosIdRoute,
   PartidosIndexRoute: PartidosIndexRoute,
   PlantillaIndexRoute: PlantillaIndexRoute,
 }

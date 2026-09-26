@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -355,9 +355,9 @@ function TeamSheet({ team, regs, manager }: { team: Team; regs: Registration[]; 
   const isRep = team.rep_user_id === profile?.id;
   const [repUser, setRepUser] = useState<string | null>(null);
 
-  useMemo(() => {
-    if (!team.rep_user_id) return setRepUser(null);
-    supabase.from("profiles").select("username").eq("id", team.rep_user_id).maybeSingle().then(({ data }) => setRepUser(data?.username ?? null));
+  useEffect(() => {
+    if (!team.rep_user_id) return void setRepUser(null);
+    void supabase.from("profiles").select("username").eq("id", team.rep_user_id).maybeSingle().then(({ data }) => setRepUser(data?.username ?? null));
   }, [team.rep_user_id]);
 
   return (
