@@ -955,6 +955,115 @@ export type Database = {
           },
         ]
       }
+      tournament_matches: {
+        Row: {
+          away_team_id: string
+          created_at: string
+          home_team_id: string
+          id: string
+          kickoff: string
+          previous_kickoff: string | null
+          round_id: string
+          status: string
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          away_team_id: string
+          created_at?: string
+          home_team_id: string
+          id?: string
+          kickoff: string
+          previous_kickoff?: string | null
+          round_id: string
+          status?: string
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          away_team_id?: string
+          created_at?: string
+          home_team_id?: string
+          id?: string
+          kickoff?: string
+          previous_kickoff?: string | null
+          round_id?: string
+          status?: string
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_matches_away_team_id_fkey"
+            columns: ["away_team_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_matches_home_team_id_fkey"
+            columns: ["home_team_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_matches_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_matches_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_rounds: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          name: string | null
+          number: number
+          start_date: string | null
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          name?: string | null
+          number: number
+          start_date?: string | null
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          name?: string | null
+          number?: number
+          start_date?: string | null
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_rounds_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tournament_teams: {
         Row: {
           created_at: string
@@ -1146,6 +1255,13 @@ export type Database = {
         Returns: {
           confirmed: number
           total: number
+        }[]
+      }
+      tournament_team_names: {
+        Args: { _tournament_id: string }
+        Returns: {
+          id: string
+          name: string
         }[]
       }
     }

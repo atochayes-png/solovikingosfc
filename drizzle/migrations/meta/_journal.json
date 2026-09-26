@@ -36,6 +36,20 @@
       "when": 1790427135584,
       "tag": "0004_sport_people_delete_own",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790427931324,
+      "tag": "0005_tournament_rounds_matches",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790427952421,
+      "tag": "0006_tournament_team_names",
+      "breakpoints": true
     }
   ]
 }

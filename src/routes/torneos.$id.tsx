@@ -28,6 +28,7 @@ import { ConfirmButton } from "@/components/panel/common";
 import { TournamentFormDialog } from "@/components/torneos/tournament-form";
 import { TeamFormDialog } from "@/components/torneos/team-form";
 import { PlayerFormDialog } from "@/components/torneos/player-form";
+import { Calendario, Jornadas } from "@/components/torneos/calendar";
 import { cn } from "@/lib/utils";
 import {
   REG_STATUS,
@@ -62,10 +63,8 @@ export const Route = createFileRoute("/torneos/$id")({
   component: TournamentPage,
 });
 
-type Tab = "resumen" | "equipos" | "jugadores";
+type Tab = "resumen" | "equipos" | "jugadores" | "calendario" | "jornadas";
 const FUTURE = [
-  { label: "Calendario", icon: CalendarDays },
-  { label: "Jornadas", icon: CalendarDays },
   { label: "Resultados", icon: Check },
   { label: "Tabla", icon: ListOrdered },
   { label: "Goleadores", icon: Users },
@@ -108,6 +107,8 @@ function TournamentPage() {
     { id: "resumen", label: "Resumen" },
     { id: "equipos", label: manager ? "Equipos" : "Mi equipo" },
     { id: "jugadores", label: "Jugadores" },
+    { id: "calendario", label: "Calendario" },
+    { id: "jornadas", label: "Jornadas" },
   ];
 
   return (
@@ -162,6 +163,8 @@ function TournamentPage() {
           <Equipos tournamentId={id} teams={teams} regs={regs} manager={manager} onOpen={setOpenTeam} />
         )}
         {tab === "jugadores" && <Jugadores teams={teams} regs={regs} manager={manager} />}
+        {tab === "calendario" && <Calendario tid={id} venue={t.venue} manager={manager} />}
+        {tab === "jornadas" && <Jornadas tid={id} venue={t.venue} manager={manager} />}
       </main>
 
       <Sheet open={!!team} onOpenChange={(v) => !v && setOpenTeam(null)}>
