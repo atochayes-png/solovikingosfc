@@ -36,7 +36,10 @@ export function PlayerFormDialog({ teamId, children }: { teamId: string; childre
 
   async function save() {
     const parsed = schema.safeParse(f);
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Revisa los datos");
+      return;
+    }
     const v = parsed.data;
     setBusy(true);
     try {
@@ -44,7 +47,7 @@ export function PlayerFormDialog({ teamId, children }: { teamId: string; childre
       const document_url = doc ? await uploadTeamFile(teamId, doc, "documentos") : null;
       const { data: person, error: pe } = await supabase
         .from("sport_people")
-        .insert({ full_name: v.full_name, document_number: v.document_number || null, created_by: profile?.id })
+        .insert({ full_name: v.full_name, document_number: v.document_number || null, created_by: profile?.id ?? null })
         .select("id")
         .single();
       if (pe) throw pe;
@@ -54,7 +57,7 @@ export function PlayerFormDialog({ teamId, children }: { teamId: string; childre
         jersey_number: v.jersey ? Number(v.jersey) : null,
         photo_url,
         document_url,
-        created_by: profile?.id,
+        created_by: profile?.id ?? null,
       });
       if (error) {
         await supabase.from("sport_people").delete().eq("id", person.id);

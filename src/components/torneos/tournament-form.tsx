@@ -64,7 +64,10 @@ export function TournamentFormDialog({
 
   async function save() {
     const parsed = schema.safeParse(f);
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Revisa los datos");
+      return;
+    }
     setBusy(true);
     try {
       const v = parsed.data;
@@ -80,7 +83,7 @@ export function TournamentFormDialog({
       };
       const { error } = tournament
         ? await supabase.from("tournaments").update(row).eq("id", tournament.id)
-        : await supabase.from("tournaments").insert({ ...row, created_by: profile?.id });
+        : await supabase.from("tournaments").insert({ ...row, created_by: profile?.id ?? null });
       if (error) throw error;
       toast.success(tournament ? "Torneo actualizado" : "Torneo creado");
       qc.invalidateQueries({ queryKey: ["tournaments"] });

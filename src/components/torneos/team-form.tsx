@@ -62,7 +62,10 @@ export function TeamFormDialog({
 
   async function save() {
     const parsed = schema.safeParse(f);
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Revisa los datos");
+      return;
+    }
     const v = parsed.data;
     setBusy(true);
     try {
