@@ -758,6 +758,44 @@ export type Database = {
         }
         Relationships: []
       }
+      sport_people: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          document_number: string | null
+          full_name: string
+          id: string
+          profile_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          document_number?: string | null
+          full_name: string
+          id?: string
+          profile_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          document_number?: string | null
+          full_name?: string
+          id?: string
+          profile_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sport_people_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       standings_settings: {
         Row: {
           id: boolean
@@ -827,6 +865,201 @@ export type Database = {
         }
         Relationships: []
       }
+      team_registrations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          document_url: string | null
+          id: string
+          jersey_number: number | null
+          person_id: string
+          photo_url: string | null
+          status: string
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          document_url?: string | null
+          id?: string
+          jersey_number?: number | null
+          person_id: string
+          photo_url?: string | null
+          status?: string
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          document_url?: string | null
+          id?: string
+          jersey_number?: number | null
+          person_id?: string
+          photo_url?: string | null
+          status?: string
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_registrations_person_id_fkey"
+            columns: ["person_id"]
+            isOneToOne: false
+            referencedRelation: "sport_people"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_registrations_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_admins: {
+        Row: {
+          created_at: string
+          id: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_admins_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_admins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_teams: {
+        Row: {
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          rep_email: string | null
+          rep_name: string | null
+          rep_phone: string | null
+          rep_user_id: string | null
+          status: string
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          rep_email?: string | null
+          rep_name?: string | null
+          rep_phone?: string | null
+          rep_user_id?: string | null
+          status?: string
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          rep_email?: string | null
+          rep_name?: string | null
+          rep_phone?: string | null
+          rep_user_id?: string | null
+          status?: string
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_teams_rep_user_id_fkey"
+            columns: ["rep_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_teams_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          referee_fee: number | null
+          registration_fee: number | null
+          season: string | null
+          sport: string
+          start_date: string | null
+          status: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          referee_fee?: number | null
+          registration_fee?: number | null
+          season?: string | null
+          sport?: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          referee_fee?: number | null
+          registration_fee?: number | null
+          season?: string | null
+          sport?: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -875,6 +1108,26 @@ export type Database = {
       }
     }
     Functions: {
+      can_access_team_path: {
+        Args: { _path: string; _user_id: string }
+        Returns: boolean
+      }
+      can_manage_team: {
+        Args: { _team_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_manage_tournament: {
+        Args: { _tournament_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_view_person: {
+        Args: { _person_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_view_tournament: {
+        Args: { _tournament_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -884,6 +1137,10 @@ export type Database = {
       }
       is_master: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      is_team_rep: {
+        Args: { _team_id: string; _user_id: string }
+        Returns: boolean
+      }
       match_attendance_stats: {
         Args: { _match_id: string }
         Returns: {

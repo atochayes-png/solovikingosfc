@@ -22,6 +22,20 @@
       "when": 1790380014489,
       "tag": "0002_standings",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790426953961,
+      "tag": "0003_tournaments_football_foundation",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790427135584,
+      "tag": "0004_sport_people_delete_own",
+      "breakpoints": true
     }
   ]
 }
