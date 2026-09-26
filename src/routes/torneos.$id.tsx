@@ -414,7 +414,7 @@ function TeamSheet({ team, regs, manager }: { team: Team; regs: Registration[]; 
   );
 }
 
-function PlayerRow({ r, manager, canDelete, teamName }: { r: Registration; manager: boolean; canDelete: boolean; teamName?: string }) {
+function PlayerRow({ r, manager, canDelete, teamName }: { r: Registration; manager: boolean; canDelete: boolean; teamName?: string | undefined }) {
   const qc = useQueryClient();
   const photo = useTeamFile(r.photo_url);
   const [busy, setBusy] = useState(false);
