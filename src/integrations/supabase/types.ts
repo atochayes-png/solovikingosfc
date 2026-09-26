@@ -1257,6 +1257,13 @@ export type Database = {
           total: number
         }[]
       }
+      tournament_team_names: {
+        Args: { _tournament_id: string }
+        Returns: {
+          id: string
+          name: string
+        }[]
+      }
     }
     Enums: {
       app_role: "master" | "admin" | "vikingo"
