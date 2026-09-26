@@ -124,6 +124,15 @@ export function AppShell({ children }: { children: ReactNode }) {
                         {item.label}
                       </Link>
                     ))}
+                    {role === "master" && (
+                      <Link
+                        to="/master"
+                        onClick={() => setOpen(false)}
+                        className="rounded-md px-3 py-2.5 text-sm font-bold text-primary hover:bg-secondary"
+                      >
+                        Panel Master · Gestión Deportiva
+                      </Link>
+                    )}
                     {panelLink && (
                       <Link
                         to={panelLink}

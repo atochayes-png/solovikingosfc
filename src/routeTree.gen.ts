@@ -14,6 +14,7 @@ import { Route as AccesoRouteImport } from './routes/acceso'
 import { Route as ClubRouteImport } from './routes/club'
 import { Route as CuentaRouteImport } from './routes/cuenta'
 import { Route as EstadisticasRouteImport } from './routes/estadisticas'
+import { Route as MasterRouteImport } from './routes/master'
 import { Route as PanelRouteImport } from './routes/panel'
 import { Route as TablaRouteImport } from './routes/tabla'
 import { Route as TribunaRouteImport } from './routes/tribuna'
@@ -46,6 +47,11 @@ const CuentaRoute = CuentaRouteImport.update({
 const EstadisticasRoute = EstadisticasRouteImport.update({
   id: '/estadisticas',
   path: '/estadisticas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MasterRoute = MasterRouteImport.update({
+  id: '/master',
+  path: '/master',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PanelRoute = PanelRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/club': typeof ClubRoute
   '/cuenta': typeof CuentaRoute
   '/estadisticas': typeof EstadisticasRoute
+  '/master': typeof MasterRoute
   '/panel': typeof PanelRoute
   '/tabla': typeof TablaRoute
   '/tribuna': typeof TribunaRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/club': typeof ClubRoute
   '/cuenta': typeof CuentaRoute
   '/estadisticas': typeof EstadisticasRoute
+  '/master': typeof MasterRoute
   '/panel': typeof PanelRoute
   '/tabla': typeof TablaRoute
   '/tribuna': typeof TribunaRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/club': typeof ClubRoute
   '/cuenta': typeof CuentaRoute
   '/estadisticas': typeof EstadisticasRoute
+  '/master': typeof MasterRoute
   '/panel': typeof PanelRoute
   '/tabla': typeof TablaRoute
   '/tribuna': typeof TribunaRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/club'
     | '/cuenta'
     | '/estadisticas'
+    | '/master'
     | '/panel'
     | '/tabla'
     | '/tribuna'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/club'
     | '/cuenta'
     | '/estadisticas'
+    | '/master'
     | '/panel'
     | '/tabla'
     | '/tribuna'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/club'
     | '/cuenta'
     | '/estadisticas'
+    | '/master'
     | '/panel'
     | '/tabla'
     | '/tribuna'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   ClubRoute: typeof ClubRoute
   CuentaRoute: typeof CuentaRoute
   EstadisticasRoute: typeof EstadisticasRoute
+  MasterRoute: typeof MasterRoute
   PanelRoute: typeof PanelRoute
   TablaRoute: typeof TablaRoute
   TribunaRoute: typeof TribunaRoute
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/estadisticas'
       fullPath: '/estadisticas'
       preLoaderRoute: typeof EstadisticasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/master': {
+      id: '/master'
+      path: '/master'
+      fullPath: '/master'
+      preLoaderRoute: typeof MasterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/panel': {
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClubRoute: ClubRoute,
   CuentaRoute: CuentaRoute,
   EstadisticasRoute: EstadisticasRoute,
+  MasterRoute: MasterRoute,
   PanelRoute: PanelRoute,
   TablaRoute: TablaRoute,
   TribunaRoute: TribunaRoute,
