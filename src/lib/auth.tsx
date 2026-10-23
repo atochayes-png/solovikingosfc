@@ -26,8 +26,13 @@ type AuthValue = {
 
 const AuthContext = createContext<AuthValue | null>(null);
 
-const emailForUsername = (username: string) =>
-  `${username.trim().toLowerCase().replace(/[^a-z0-9]/g, "")}@vikingos.fc`;
+const resolveAuthEmail = (identifier: string) => {
+  const clean = identifier.trim();
+  if (clean.includes("@")) {
+    return clean.toLowerCase();
+  }
+  return `${clean.toLowerCase().replace(/[^a-z0-9]/g, "")}@vikingos.fc`;
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -91,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isMaster: role === "master",
       async signIn(username, password) {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: emailForUsername(username),
+          email: resolveAuthEmail(username),
           password,
         });
         if (error) throw new Error("Usuario o contraseña incorrectos");

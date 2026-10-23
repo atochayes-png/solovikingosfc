@@ -28,7 +28,7 @@ export const Route = createFileRoute("/acceso")({
 });
 
 function Acceso() {
-  const { signIn, role, session } = useAuth();
+  const { signIn, role, session, loading } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -41,10 +41,12 @@ function Acceso() {
   }, []);
 
   useEffect(() => {
-    if (!session) return;
-    if (role === "master" || role === "admin") navigate({ to: "/panel", replace: true });
+    if (loading || !session) return;
+    if (role === "master") navigate({ to: "/master", replace: true });
+    else if (role === "admin") navigate({ to: "/panel", replace: true });
     else if (role === "vikingo") navigate({ to: "/tribuna", replace: true });
-  }, [session, role, navigate]);
+    else navigate({ to: "/", replace: true });
+  }, [session, role, loading, navigate]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,14 +85,14 @@ function Acceso() {
           autoComplete="on"
         >
           <div className="space-y-1.5">
-            <Label htmlFor="usuario">Usuario</Label>
+            <Label htmlFor="usuario">Usuario o correo</Label>
             <Input
               id="usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoCapitalize="none"
-              autoComplete="username"
-              placeholder="Tu usuario"
+              autoComplete="username email"
+              placeholder="Tu usuario o correo"
               className="h-12 text-base"
               required
             />
