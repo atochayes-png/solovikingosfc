@@ -18,6 +18,7 @@ import { Route as MasterRouteImport } from './routes/master'
 import { Route as PanelRouteImport } from './routes/panel'
 import { Route as TablaRouteImport } from './routes/tabla'
 import { Route as TribunaRouteImport } from './routes/tribuna'
+import { Route as VikingosRouteImport } from './routes/vikingos'
 import { Route as VikingotecaRouteImport } from './routes/vikingoteca'
 import { Route as PartidosIndexRouteImport } from './routes/partidos.index'
 import { Route as PartidosIdRouteImport } from './routes/partidos.$id'
@@ -71,6 +72,11 @@ const TribunaRoute = TribunaRouteImport.update({
   path: '/tribuna',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VikingosRoute = VikingosRouteImport.update({
+  id: '/vikingos',
+  path: '/vikingos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VikingotecaRoute = VikingotecaRouteImport.update({
   id: '/vikingoteca',
   path: '/vikingoteca',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/panel': typeof PanelRoute
   '/tabla': typeof TablaRoute
   '/tribuna': typeof TribunaRoute
+  '/vikingos': typeof VikingosRoute
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
   '/plantilla/$id': typeof PlantillaIdRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/panel': typeof PanelRoute
   '/tabla': typeof TablaRoute
   '/tribuna': typeof TribunaRoute
+  '/vikingos': typeof VikingosRoute
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
   '/plantilla/$id': typeof PlantillaIdRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/panel': typeof PanelRoute
   '/tabla': typeof TablaRoute
   '/tribuna': typeof TribunaRoute
+  '/vikingos': typeof VikingosRoute
   '/vikingoteca': typeof VikingotecaRoute
   '/partidos/$id': typeof PartidosIdRoute
   '/plantilla/$id': typeof PlantillaIdRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/panel'
     | '/tabla'
     | '/tribuna'
+    | '/vikingos'
     | '/vikingoteca'
     | '/partidos/$id'
     | '/plantilla/$id'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/panel'
     | '/tabla'
     | '/tribuna'
+    | '/vikingos'
     | '/vikingoteca'
     | '/partidos/$id'
     | '/plantilla/$id'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/panel'
     | '/tabla'
     | '/tribuna'
+    | '/vikingos'
     | '/vikingoteca'
     | '/partidos/$id'
     | '/plantilla/$id'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   PanelRoute: typeof PanelRoute
   TablaRoute: typeof TablaRoute
   TribunaRoute: typeof TribunaRoute
+  VikingosRoute: typeof VikingosRoute
   VikingotecaRoute: typeof VikingotecaRoute
   PartidosIdRoute: typeof PartidosIdRoute
   PlantillaIdRoute: typeof PlantillaIdRoute
@@ -303,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TribunaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vikingos': {
+      id: '/vikingos'
+      path: '/vikingos'
+      fullPath: '/vikingos'
+      preLoaderRoute: typeof VikingosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vikingoteca': {
       id: '/vikingoteca'
       path: '/vikingoteca'
@@ -365,6 +385,7 @@ const rootRouteChildren: RootRouteChildren = {
   PanelRoute: PanelRoute,
   TablaRoute: TablaRoute,
   TribunaRoute: TribunaRoute,
+  VikingosRoute: VikingosRoute,
   VikingotecaRoute: VikingotecaRoute,
   PartidosIdRoute: PartidosIdRoute,
   PlantillaIdRoute: PlantillaIdRoute,
