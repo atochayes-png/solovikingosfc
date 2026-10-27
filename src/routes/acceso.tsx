@@ -42,8 +42,7 @@ function Acceso() {
 
   useEffect(() => {
     if (loading || !session) return;
-    if (role === "master") navigate({ to: "/master", replace: true });
-    else if (role === "admin") navigate({ to: "/panel", replace: true });
+    if (role === "master" || role === "admin") navigate({ to: "/torneos", replace: true });
     else if (role === "vikingo") navigate({ to: "/tribuna", replace: true });
     else navigate({ to: "/", replace: true });
   }, [session, role, loading, navigate]);

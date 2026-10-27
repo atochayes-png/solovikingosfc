@@ -138,7 +138,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       onClick={() => setOpen(false)}
                       className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-secondary"
                     >
-                      Mis torneos
+                      Torneos
                     </Link>
                     {panelLink && (
                       <Link
@@ -172,9 +172,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </SheetContent>
               </Sheet>
             ) : (
-              <Button asChild size="sm">
+              <Button asChild size="sm" variant="outline">
                 <Link to="/acceso">
-                  <LogIn className="mr-1 h-4 w-4" /> Entrar
+                  <LogIn className="mr-1 h-4 w-4" /> Acceso
                 </Link>
               </Button>
             )}
